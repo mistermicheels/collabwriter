@@ -17,7 +17,7 @@ export interface OutgoingResetMessage extends SocketMessage {
     fullText: string;
     selectedLastRound: string;
     selectedLastRoundVotes: number;
-    selectedLastRoundTotalVotes: number;
+    lastRoundTotalVotes: number;
     newWordChoices: string[];
     voteNumber: number;
     percentVotingTimePassed: number;
@@ -34,7 +34,7 @@ export interface OutgoingNewVoteMessage extends SocketMessage {
     type: "newVote";
     selectedLastRound: string;
     selectedLastRoundVotes: number;
-    selectedLastRoundTotalVotes: number;
+    lastRoundTotalVotes: number;
     newWordChoices: string[];
     voteNumber: number;
     percentVotingTimePassed: number;

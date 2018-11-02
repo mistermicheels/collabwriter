@@ -60,7 +60,7 @@ export class Controller {
             type: "newVote",
             selectedLastRound: this.lastVoteResult.selectedWord,
             selectedLastRoundVotes: this.lastVoteResult.selectedWordVotes,
-            selectedLastRoundTotalVotes: this.lastVoteResult.totalVotes,
+            lastRoundTotalVotes: this.lastVoteResult.totalVotes,
             newWordChoices: this.newWordChoices,
             voteNumber: this.voteNumber,
             percentVotingTimePassed: this.percentVotingTimePassed,
@@ -78,7 +78,7 @@ export class Controller {
             fullText: this.fullText,
             selectedLastRound: this.lastVoteResult.selectedWord,
             selectedLastRoundVotes: this.lastVoteResult.selectedWordVotes,
-            selectedLastRoundTotalVotes: this.lastVoteResult.totalVotes,
+            lastRoundTotalVotes: this.lastVoteResult.totalVotes,
             newWordChoices: this.newWordChoices,
             voteNumber: this.voteNumber,
             percentVotingTimePassed: this.percentVotingTimePassed,
@@ -94,7 +94,7 @@ export class Controller {
 
     onSocketMessage(message: SocketMessage) {
         if (isIncomingVoteMessage(message)) {
-            message;
+            this.votesTracker.registerVote(message.voteNumber, message.word);
         }
     }
 

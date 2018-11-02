@@ -10,7 +10,7 @@ interface WordWithScore {
 export class SuggestedWordsGenerator {
 
     async getSuggestedWords(lastWord: string, lastActualWord: string) {
-        if (lastWord = ".") {
+        if (lastWord === ".") {
             return await this.getSuggestedFirstWordsForNewSentence(lastActualWord);
         } else {
             return await this.getSuggestedFollowingWordsInSentence(lastWord);
@@ -20,10 +20,11 @@ export class SuggestedWordsGenerator {
     async getSuggestedFirstWordsForNewSentence(lastActualWord: string) {
         const dataMuseSuggestions = await this.getDataMuseWordsRelatedTo(lastActualWord);
 
-        const suggestions: Array<string> = [];
+        let suggestions: Array<string> = [];
         suggestions.push(...this.selectDistinctRandomWords(dataMuseSuggestions, 4));
         this.completeUsingRandomSuggestions(suggestions, 12);
         this.shuffleSuggestions(suggestions);
+        suggestions = suggestions.map(suggestion => suggestion[0].toUpperCase() + suggestion.substring(1));
 
         return suggestions;
     }
@@ -103,7 +104,8 @@ export class SuggestedWordsGenerator {
                 timeout: 1000
             });
 
-            const wordsWithScores = result.body as Array<WordWithScore>;
+            let wordsWithScores = result.body as Array<WordWithScore>;
+            wordsWithScores = wordsWithScores.filter(wordWithScore => wordWithScore.word !== ".");
             return wordsWithScores.map(wordWithScore => wordWithScore.word);
         } catch (error) {
             return [];

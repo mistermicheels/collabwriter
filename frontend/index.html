@@ -22,7 +22,7 @@
     <div class="container">
         <div id="header">
             <h1 class="display-4">CollabWriter</h1>
-            <p class="float-left">Currently active users: 100 (only update on tick)</p>
+            <p class="float-left">Currently active users: <span id="activeUsers"></span></p>
             <button type="button" class="btn btn-link float-right" style="padding: 0px; border: 0px;" data-toggle="modal"
                 data-target="#fullTextModal" onclick="setTextInModal()">Full text since joining</button>
             <div class="clearfix"></div>
@@ -51,47 +51,50 @@
                         <strong>_____</strong></span></p>
             </div>
         </div>
+        <div>
+            <p id="lastChoiceInfo" class="text-secondary">Result of previous round</p>
+        </div>
         <div id="progress">
             <div class="progress" style="margin-bottom: 20px;">
-                <div class="progress-bar" role="progressbar" style="width: 75%"></div>
+                <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
             </div>
         </div>
         <div id="suggestions" class="row">
             <div class="col-sm-6 col-md-4 col-lg-3">
-                <button id="choice1" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden"></button>
+                <button id="choice1" onclick="choiceButtonClicked(1)" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden">placeholder</button>
             </div>
             <div class="col-sm-6 col-md-4 col-lg-3">
-                <button id="choice2" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden"></button>
+                <button id="choice2" onclick="choiceButtonClicked(2)" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden">placeholder</button>
             </div>
             <div class="col-sm-6 col-md-4 col-lg-3">
-                <button id="choice3" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden"></button>
+                <button id="choice3" onclick="choiceButtonClicked(3)" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden">placeholder</button>
             </div>
             <div class="col-sm-6 col-md-4 col-lg-3">
-                <button id="choice4" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden"></button>
+                <button id="choice4" onclick="choiceButtonClicked(4)" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden">placeholder</button>
             </div>
             <div class="col-sm-6 col-md-4 col-lg-3">
-                <button id="choice5" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden"></button>
+                <button id="choice5" onclick="choiceButtonClicked(5)" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden">placeholder</button>
             </div>
             <div class="col-sm-6 col-md-4 col-lg-3">
-                <button id="choice6" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden"></button>
+                <button id="choice6" onclick="choiceButtonClicked(6)" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden">placeholder</button>
             </div>
             <div class="col-sm-6 col-md-4 col-lg-3">
-                <button id="choice7" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden"></button>
+                <button id="choice7" onclick="choiceButtonClicked(7)" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden">placeholder</button>
             </div>
             <div class="col-sm-6 col-md-4 col-lg-3">
-                <button id="choice8" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden"></button>
+                <button id="choice8" onclick="choiceButtonClicked(8)" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden">placeholder</button>
             </div>
             <div class="col-sm-6 col-md-4 col-lg-3">
-                <button id="choice9" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden"></button>
+                <button id="choice9" onclick="choiceButtonClicked(9)" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden">placeholder</button>
             </div>
             <div class="col-sm-6 col-md-4 col-lg-3">
-                <button id="choice10" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden"></button>
+                <button id="choice10" onclick="choiceButtonClicked(10)" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden">placeholder</button>
             </div>
             <div class="col-sm-6 col-md-4 col-lg-3">
-                <button id="choice11" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden"></button>
+                <button id="choice11" onclick="choiceButtonClicked(11)" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden">placeholder</button>
             </div>
             <div class="col-sm-6 col-md-4 col-lg-3">
-                <button id="choice12" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden"></button>
+                <button id="choice12" onclick="choiceButtonClicked(12)" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden">placeholder</button>
             </div>
         </div>
     </div>
