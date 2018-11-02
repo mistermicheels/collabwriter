@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build-ts": "tsc",
-    "watch-ts": "tsc -w"
+    "watch-ts": "tsc -w",
+    "postinstall": "npm run build-ts"
   },
   "author": "Maarten Michiels",
   "license": "UNLICENSED",

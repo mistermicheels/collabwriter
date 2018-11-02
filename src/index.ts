@@ -9,4 +9,11 @@ import { VotesTracker } from "./VotesTracker";
 import { VotingClock } from "./VotingClock";
 
 const controller = new Controller(new SuggestedWordsGenerator(), new TextTracker(), new VotesTracker(), new VotingClock());
-new Server(3000, controller);
+
+let port = 3000;
+
+if (process.env.PORT) {
+    port = parseInt(process.env.PORT);
+}
+
+new Server(port, controller);
