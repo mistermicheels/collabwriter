@@ -1,0 +1,101 @@
+<html>
+
+<head>
+    <!-- Bootstrap required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" async></script>
+</head>
+
+<body>
+    <div class="container">
+        <div id="header">
+            <h1 class="display-4">CollabWriter</h1>
+            <p class="float-left">Currently active users: 100 (only update on tick)</p>
+            <button type="button" class="btn btn-link float-right" style="padding: 0px; border: 0px;" data-toggle="modal"
+                data-target="#fullTextModal" onclick="setTextInModal()">Full text since joining</button>
+            <div class="clearfix"></div>
+        </div>
+        <div class="modal fade" id="fullTextModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Full text since joining</h5>
+                      <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body" id="fullTextModalBody"></div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        <div id="textArea" class="row">
+            <div class="col main-text">
+                <p>
+                    <span id="currentText" style="white-space: pre-line;"></span>
+                    <span class="text-primary">
+                        <strong>_____</strong></span></p>
+            </div>
+        </div>
+        <div id="progress">
+            <div class="progress" style="margin-bottom: 20px;">
+                <div class="progress-bar" role="progressbar" style="width: 75%"></div>
+            </div>
+        </div>
+        <div id="suggestions" class="row">
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <button id="choice1" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden"></button>
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <button id="choice2" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden"></button>
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <button id="choice3" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden"></button>
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <button id="choice4" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden"></button>
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <button id="choice5" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden"></button>
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <button id="choice6" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden"></button>
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <button id="choice7" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden"></button>
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <button id="choice8" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden"></button>
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <button id="choice9" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden"></button>
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <button id="choice10" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden"></button>
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <button id="choice11" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden"></button>
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <button id="choice12" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden"></button>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
