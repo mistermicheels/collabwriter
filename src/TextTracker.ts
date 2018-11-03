@@ -1,16 +1,37 @@
+import { TextStorage } from "./TextStorage";
+
 export class TextTracker {
 
-    private fullText: string =
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut elit odio. Quisque at ligula nec nibh rutrum congue et in neque. Nulla consequat luctus malesuada. Morbi aliquet mi vitae porta interdum. Fusce laoreet justo ante, faucibus hendrerit lectus imperdiet in. Nunc volutpat pretium dui faucibus aliquam. Cras maximus ullamcorper consequat. Praesent sit amet lorem augue. Quisque rutrum maximus augue, quis dignissim quam. Pellentesque ut luctus erat. Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-        + " Welcome to the CollabWriter online collaborative writing application."
-        + " One upon a time, there was a story that was written collaboratively by numerous online people."
-        + " Together, they decided on the words to use, one by one."
-        + " As time passed, the story became longer and longer."
-        + " If you see this text, the story has been reset."
-        + " Feel free to contribute to the writing of a new story.";
+    private readonly textStorage: TextStorage;
 
-    private lastWord = ".";
-    private lastActualWord = "story";
+    private fullText: string;
+    private lastWord: string;
+    private lastActualWord: string;
+
+    constructor(textStorage: TextStorage) {
+        this.textStorage = textStorage;
+    }
+
+    async initializeFromStorage() {
+        let retrievedText: string;
+
+        try {
+            retrievedText = await this.textStorage.retrieveText();
+        } catch (error) { }
+
+        this.fullText = retrievedText || "This is the start of the story.";
+
+        const sentenceParts = this.fullText.split(" ");
+        const lastSentencePart = sentenceParts[sentenceParts.length - 1];
+
+        if (lastSentencePart.endsWith(".")) {
+            this.lastWord = ".";
+            this.lastActualWord = lastSentencePart.substring(0, lastSentencePart.length - 1);
+        } else {
+            this.lastWord = lastSentencePart;
+            this.lastActualWord = lastSentencePart;
+        }
+    }
 
     getFullText() {
         return this.fullText;
@@ -32,6 +53,20 @@ export class TextTracker {
             this.fullText = this.fullText + " " + word;
             this.lastWord = word;
             this.lastActualWord = word;
+        }
+
+        this.truncateTextIfTooLong();
+
+        // don't await we don't need to be sure it succeeds
+        this.textStorage.storeText(this.fullText);
+    }
+
+    private truncateTextIfTooLong() {
+        const sentenceDelimiter = ". ";
+        const sentences = this.fullText.split(sentenceDelimiter);
+
+        if (sentences.length > 200) {
+            this.fullText = sentences.slice(sentences.length - 200).join(sentenceDelimiter);
         }
     }
 

@@ -1,19 +1,42 @@
-import express from "express";
-import expressWs from "express-ws";
-
 import { Server } from "./Server";
 import { Controller } from "./Controller";
 import { SuggestedWordsGenerator } from "./SuggestedWordsGenerator";
 import { TextTracker } from "./TextTracker";
 import { VotesTracker } from "./VotesTracker";
 import { VotingClock } from "./VotingClock";
+import { TextStorage } from "./TextStorage";
 
-const controller = new Controller(new SuggestedWordsGenerator(), new TextTracker(), new VotesTracker(), new VotingClock());
+init();
 
-let port = 3000;
+async function init() {
+    const port = determinePort();
+    const redisUrl = determineRedisUrl();
 
-if (process.env.PORT) {
-    port = parseInt(process.env.PORT);
+    const suggestedWordsGenerator = new SuggestedWordsGenerator();
+
+    const textTracker = new TextTracker(new TextStorage(redisUrl));
+    await textTracker.initializeFromStorage();
+
+    const votesTracker = new VotesTracker();
+    const votingClock = new VotingClock();
+
+    const controller = new Controller(suggestedWordsGenerator, textTracker, votesTracker, votingClock);
+
+    new Server(port, controller);
 }
 
-new Server(port, controller);
+function determinePort() {
+    if (process.env.PORT) {
+        return parseInt(process.env.PORT);
+    } else {
+        return 3000;
+    }
+}
+
+function determineRedisUrl() {
+    if (process.env.REDIS_URL) {
+        return process.env.REDIS_URL;
+    } else {
+        return "redis://192.168.56.101:6379";
+    }
+}

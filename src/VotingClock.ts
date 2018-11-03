@@ -4,25 +4,20 @@ export class VotingClock {
 
     private controller: Controller;
 
-    private currentPercentageComplete = 0;
+    private tickCount = 0;
 
     setController(controller: Controller) {
         this.controller = controller;
     }
 
-    resetClock() {
-        this.currentPercentageComplete = 0;
-        this.tick();
+    resetTickCount() {
+        this.tickCount = 0;
     }
 
-    private tick() {
+    tick() {
         setTimeout(() => {
-            this.currentPercentageComplete = this.currentPercentageComplete + 10;
-            this.controller.onVotingClockTick(this.currentPercentageComplete);
-
-            if (this.currentPercentageComplete < 100) {
-                this.tick();
-            }
+            this.tickCount = this.tickCount + 1;
+            this.controller.onVotingClockTickCompleted(this.tickCount);
         }, 1000);
     }
 

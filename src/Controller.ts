@@ -1,6 +1,6 @@
 import ws from "ws";
 
-import { SocketMessage, isIncomingVoteMessage, OutgoingResetMessage, OutgoingTickMessage, OutgoingNewVoteMessage } from "./SocketMessage";
+import { SocketMessage, isIncomingVoteMessage, OutgoingResetMessage, OutgoingTickMessage, OutgoingNewVoteMessage, OutgoingLastVoteMessage } from "./SocketMessage";
 import { Server } from "./Server";
 import { VoteResult, VotesTracker } from "./VotesTracker";
 import { TextTracker } from "./TextTracker";
@@ -53,14 +53,12 @@ export class Controller {
         this.votesTracker.startNewVote(this.newWordChoices);
         this.voteNumber = this.votesTracker.getCurrentVoteNumber();
 
-        this.votingClock.resetClock();
+        this.votingClock.resetTickCount();
+        this.votingClock.tick();
         this.percentVotingTimePassed = 0;
 
         const message: OutgoingNewVoteMessage = {
             type: "newVote",
-            selectedLastRound: this.lastVoteResult.selectedWord,
-            selectedLastRoundVotes: this.lastVoteResult.selectedWordVotes,
-            lastRoundTotalVotes: this.lastVoteResult.totalVotes,
             newWordChoices: this.newWordChoices,
             voteNumber: this.voteNumber,
             percentVotingTimePassed: this.percentVotingTimePassed,
@@ -98,10 +96,14 @@ export class Controller {
         }
     }
 
-    onVotingClockTick(percentageCompleted: number) {
-        this.percentVotingTimePassed = percentageCompleted;
+    onVotingClockTickCompleted(tickCount: number) {
+        this.percentVotingTimePassed = Math.min(100, 100 * tickCount / 7);
 
-        if (percentageCompleted === 100) {
+        if (tickCount === 8) {
+            this.startNewVote();
+        } else if (tickCount === 7) {
+            this.percentVotingTimePassed = 100;
+
             this.lastVoteResult = this.votesTracker.getVoteResult();
 
             if (this.lastVoteResult.selectedWord) {
@@ -109,16 +111,36 @@ export class Controller {
                 this.fullText = this.textTracker.getFullText();
             }
 
-            this.startNewVote();
+            this.sendLastVote();
+            this.votingClock.tick();
         } else {
-            const tickMessage: OutgoingTickMessage = {
-                type: "tick",
-                percentVotingTimePassed: percentageCompleted,
-                activeUsers: this.activeUsers
-            };
-
-            this.server.broadcastMessage(tickMessage);
+            this.percentVotingTimePassed = Math.floor(100 * tickCount / 7);
+            this.sendTick();
+            this.votingClock.tick();
         }
+    }
+
+    private sendLastVote() {
+        const lastVoteMessage: OutgoingLastVoteMessage = {
+            type: "lastVote",
+            selectedLastRound: this.lastVoteResult.selectedWord,
+            selectedLastRoundVotes: this.lastVoteResult.selectedWordVotes,
+            lastRoundTotalVotes: this.lastVoteResult.totalVotes,
+            percentVotingTimePassed: this.percentVotingTimePassed,
+            activeUsers: this.activeUsers
+        };
+
+        this.server.broadcastMessage(lastVoteMessage);
+    }
+
+    private sendTick() {
+        const tickMessage: OutgoingTickMessage = {
+            type: "tick",
+            percentVotingTimePassed: this.percentVotingTimePassed,
+            activeUsers: this.activeUsers
+        };
+
+        this.server.broadcastMessage(tickMessage);
     }
 
 }

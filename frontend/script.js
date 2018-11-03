@@ -5,11 +5,18 @@ const activeUsersElement = document.getElementById("activeUsers");
 const lastChoiceInfoElement = document.getElementById("lastChoiceInfo");
 const progressBarElement = document.getElementById("progressBar");
 
+const isTouch =  !!("ontouchstart" in window) || window.navigator.msMaxTouchPoints > 0;
+
 const choiceButtonElements = [];
 
 for (let i = 1; i <= 12; i++) {
     const buttonElement = document.getElementById("choice" + i);
     buttonElement.style.visibility = "hidden";
+
+    if (isTouch) {
+        buttonElement.classList.add("no-hover");
+    }
+
     choiceButtonElements.push(buttonElement);
 }
 
@@ -17,7 +24,9 @@ for (let i = 1; i <= 12; i++) {
 let currentTextWords = [];
 let currentTextWithLineBreaks = "";
 let voteNumber = -1;
-let newWordChoices = [];
+let wordChoices = [];
+
+let ownChoiceLastRound = undefined;
 
 // socket setup
 const socket = new WebSocket("ws://" + location.host + "/socket");
@@ -27,6 +36,8 @@ socket.onmessage = function (event) {
 
     if (message.type === "reset") {
         processResetMessage(message);
+    } else if (message.type === "lastVote") {
+        processLastVoteMessage(message);
     } else if (message.type === "newVote") {
         processNewVoteMessage(message);
     } else if (message.type === "tick") {
@@ -39,55 +50,31 @@ socket.onmessage = function (event) {
 function processResetMessage(message) {
     currentTextWords = message.fullText.split(" ");
     initializeCurrentText();
-    window.addEventListener("resize", () => initializeCurrentText());
+    window.addEventListener("resize", initializeCurrentText);
 
-    processNewVoteMessage(message);
+    updateLastChoiceInfo(message);
+    initializeNewVotingRound(message);
+    updateProgressBarAndActiveUsers(message);
+}
+
+function processLastVoteMessage(message) {
+    addLastSelectedWordIfDefined(message);
+    updateLastChoiceInfo(message);
+    updateProgressBarAndActiveUsers(message);
 }
 
 function processNewVoteMessage(message) {
-    if (message.selectedLastRound) {
-        addWord(message.selectedLastRound);
-
-        lastChoiceInfoElement.textContent =
-            `The last voting round chose '${message.selectedLastRound}' with ${message.selectedLastRoundVotes} votes out of ${message.lastRoundTotalVotes}`;
-    } else {
-        lastChoiceInfoElement.textContent = "No votes were cast in the previous voting round";
-    }
-
-    voteNumber = message.voteNumber;
-    newWordChoices = message.newWordChoices;
-    updateChoiceButtons();
-
-    processTickMessage(message);
-}
-
-function updateChoiceButtons() {
-    for (let i = 0; i < newWordChoices.length; i++) {
-        const buttonElement = choiceButtonElements[i];
-
-        buttonElement.disabled = false;
-        buttonElement.style.visibility = "visible";
-        buttonElement.classList.remove("btn-primary");
-        buttonElement.classList.add("btn-outline-primary");
-
-        const choice = newWordChoices[i];
-
-        if (choice === ".") {
-            buttonElement.textContent = ". (new sentence)";
-        } else {
-            buttonElement.textContent = choice;
-        }
-    }
+    initializeNewVotingRound(message);
+    updateProgressBarAndActiveUsers(message);
 }
 
 function processTickMessage(message) {
-    progressBarElement.style.width = message.percentVotingTimePassed + "%";
-    activeUsersElement.textContent = message.activeUsers;
+    updateProgressBarAndActiveUsers(message);
 }
 
 function initializeCurrentText() {
     const windowHeight = window.innerHeight;
-    const headerHeight = document.getElementById("header").clientHeight + 18;
+    const headerHeight = document.getElementById("header").clientHeight;
     const lastChoiceInfoElementHeight = lastChoiceInfoElement.clientHeight + 18;
     const progressHeight = document.getElementById("progress").clientHeight + 20;
     const suggestionsHeight = document.getElementById("suggestions").clientHeight;
@@ -123,6 +110,85 @@ function getTextAreaHeight() {
     return textAreaElement.clientHeight;
 }
 
+function updateLastChoiceInfo(message) {
+    if (message.selectedLastRound) {
+        lastChoiceInfoElement.textContent =
+            "The last voting round chose '" + message.selectedLastRound
+            + "' with " + message.selectedLastRoundVotes
+            + " votes out of " + message.lastRoundTotalVotes;
+
+        if (ownChoiceLastRound !== undefined) {
+            visualizeOwnChoiceVsSelected(ownChoiceLastRound, message.selectedLastRound);
+        }
+    } else {
+        lastChoiceInfoElement.textContent = "No votes were cast in the previous voting round";
+    }
+}
+
+function visualizeOwnChoiceVsSelected(ownChoiceLastRound, selectedLastRound) {
+    choiceButtonElements.forEach(function (buttonElement, index) {
+        if (wordChoices[index] === selectedLastRound) {
+            buttonElement.classList.remove("btn-primary");
+            buttonElement.classList.remove("btn-outline-primary");
+            buttonElement.classList.add("btn-success");
+        } else if (wordChoices[index] === ownChoiceLastRound) {
+            buttonElement.classList.remove("btn-primary");
+            buttonElement.classList.remove("btn-outline-primary");
+            buttonElement.classList.add("btn-danger");
+        }
+    });
+}
+
+function initializeNewVotingRound(message) {
+    voteNumber = message.voteNumber;
+    wordChoices = message.newWordChoices;
+    ownChoiceLastRound = undefined;
+    updateChoiceButtons();
+}
+
+function updateChoiceButtons() {
+    for (let i = 0; i < wordChoices.length; i++) {
+        const buttonElement = choiceButtonElements[i];
+
+        buttonElement.style.visibility = "visible";
+        buttonElement.classList.remove("btn-success");
+        buttonElement.classList.remove("btn-danger");
+        buttonElement.classList.remove("btn-primary");
+        buttonElement.classList.add("btn-outline-primary");
+
+        const choice = wordChoices[i];
+
+        if (choice === ".") {
+            buttonElement.textContent = ". (end sentence)";
+        } else {
+            buttonElement.textContent = choice;
+        }
+    }
+
+    setChoiceButtonsEnabled(true);
+}
+
+function setChoiceButtonsEnabled(enabled) {
+    choiceButtonElements.forEach(function (element) {
+        element.disabled = !enabled;
+    });
+}
+
+function updateProgressBarAndActiveUsers(message) {
+    progressBarElement.style.width = message.percentVotingTimePassed + "%";
+    activeUsersElement.textContent = message.activeUsers;
+
+    if (message.percentVotingTimePassed === 100) {
+        setChoiceButtonsEnabled(false);
+    }
+}
+
+function addLastSelectedWordIfDefined(message) {
+    if (message.selectedLastRound) {
+        addWord(message.selectedLastRound);
+    }
+}
+
 function addWord(newWord) {
     if (newWord === ".") {
         addPeriod();
@@ -143,7 +209,7 @@ function addPeriod() {
         currentTextWithLineBreaks = currentTextWithLineBreaks + ".";
     } else {
         const positionOfFirstLineBreak = currentTextWithLineBreaks.indexOf("\n");
-        currentTextWithLineBreaks = currentTextWithLineBreaks.substring(positionOfFirstLineBreak + 1) + ".\r\n" ;
+        currentTextWithLineBreaks = currentTextWithLineBreaks.substring(positionOfFirstLineBreak + 1) + ".\r\n";
         setCurrentTextOnElement(currentTextWithLineBreaks);
     }
 }
@@ -166,26 +232,24 @@ function addActualNewWord(newWord) {
 
 function choiceButtonClicked(choiceNumber) {
     const index = choiceNumber - 1;
+    const word = wordChoices[index];
+    ownChoiceLastRound = word;
 
     const buttonElement = choiceButtonElements[index];
     buttonElement.classList.add("btn-primary");
     buttonElement.classList.remove("btn-outline-primary");
 
-    for (const buttonElement of choiceButtonElements) {
-        buttonElement.disabled = true;
-    }
-
-    const word = newWordChoices[index];
+    setChoiceButtonsEnabled(false);
 
     const voteMessage = {
         type: "vote",
-        voteNumber,
-        word
+        voteNumber: voteNumber,
+        word: word
     };
 
     socket.send(JSON.stringify(voteMessage));
 }
 
 function setTextInModal() {
-    document.getElementById("fullTextModalBody").textContent = currentTextWords.join(" ");
+    document.getElementById("fullTextInModal").textContent = currentTextWords.join(" ");
 }

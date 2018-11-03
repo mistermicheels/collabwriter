@@ -21,7 +21,7 @@ export class SuggestedWordsGenerator {
         const dataMuseSuggestions = await this.getDataMuseWordsRelatedTo(lastActualWord);
 
         let suggestions: Array<string> = [];
-        suggestions.push(...this.selectDistinctRandomWords(dataMuseSuggestions, 4));
+        suggestions.push(...this.selectDistinctRandomWords(dataMuseSuggestions, 6));
         this.completeUsingRandomSuggestions(suggestions, 12);
         this.shuffleSuggestions(suggestions);
         suggestions = suggestions.map(suggestion => suggestion[0].toUpperCase() + suggestion.substring(1));
@@ -85,11 +85,12 @@ export class SuggestedWordsGenerator {
         const topTen = dataMuseSuggestions.slice(0, 10);
         const others = dataMuseSuggestions.slice(10);
 
-        const suggestions: Array<string> = [];
-        suggestions.push(...this.selectDistinctRandomWords(topTen, 3));
-        suggestions.push(...this.selectDistinctRandomWords(others, 3));
+        let suggestions: Array<string> = [];
+        suggestions.push(...this.selectDistinctRandomWords(topTen, 4));
+        suggestions.push(...this.selectDistinctRandomWords(others, 4));
         this.completeUsingRandomSuggestions(suggestions, 11);
         this.shuffleSuggestions(suggestions);
+        suggestions = suggestions.map(suggestion => (suggestion === "i") ? "I" : suggestion);
 
         // always start suggestions with a period to end the sentence
         suggestions.unshift(".");

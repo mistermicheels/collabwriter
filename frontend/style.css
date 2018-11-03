@@ -37,3 +37,8 @@ body {
 #suggestions button {
     margin-bottom: 20px;
 }
+
+.no-hover.btn-outline-primary:hover {
+    color: #007bff !important;
+    background-color: inherit !important;
+}
