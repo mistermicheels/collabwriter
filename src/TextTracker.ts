@@ -2,6 +2,8 @@ import { TextStorage } from "./TextStorage";
 
 export class TextTracker {
 
+    public static readonly MAX_WORDS = 2500;
+
     private readonly textStorage: TextStorage;
 
     private fullText: string;
@@ -62,11 +64,10 @@ export class TextTracker {
     }
 
     private truncateTextIfTooLong() {
-        const sentenceDelimiter = ". ";
-        const sentences = this.fullText.split(sentenceDelimiter);
+        const sentenceParts = this.fullText.split(" ");
 
-        if (sentences.length > 200) {
-            this.fullText = sentences.slice(sentences.length - 200).join(sentenceDelimiter);
+        if (sentenceParts.length > TextTracker.MAX_WORDS) {
+            this.fullText = sentenceParts.slice(sentenceParts.length - TextTracker.MAX_WORDS).join(" ");
         }
     }
 
