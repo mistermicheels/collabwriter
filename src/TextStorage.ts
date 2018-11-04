@@ -10,9 +10,8 @@ export class TextStorage {
     constructor(redisUrl: string) {
         this.client = redis.createClient(redisUrl);
 
-        this.client.on("error", function (error) {
-            console.log("Redis error " + error);
-        });
+        this.client.on("error", error => console.log("Redis error " + error));
+        this.client.on("connect", error => console.log("Connected to Redis"));
     }
 
     storeText(text: string): Promise<void> {

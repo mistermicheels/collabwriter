@@ -1,3 +1,4 @@
+import https from "https";
 import got from "got";
 
 const randomWords = require("random-words");
@@ -8,6 +9,9 @@ interface WordWithScore {
 }
 
 export class SuggestedWordsGenerator {
+
+    // this is required to keep SSL connections alive, greatly improving request performance
+    private readonly keepAliveAgent = new https.Agent({ keepAlive: true });
 
     async getSuggestedWords(lastWord: string, lastActualWord: string) {
         if (lastWord === ".") {
@@ -32,13 +36,17 @@ export class SuggestedWordsGenerator {
     async getDataMuseWordsRelatedTo(word: string) {
         try {
             const result = await got("https://api.datamuse.com/words?rel_trg=" + word, {
+                method: "GET",
                 json: true,
-                timeout: 1000
+                timeout: 1000,
+                retry: 0,
+                agent: this.keepAliveAgent
             });
 
             const wordsWithScores = result.body as Array<WordWithScore>;
             return wordsWithScores.map(wordWithScore => wordWithScore.word);
         } catch (error) {
+            console.log("Error contacting DataMuse API", error);
             return [];
         }
     }
@@ -48,11 +56,10 @@ export class SuggestedWordsGenerator {
         const selected: Array<string> = [];
 
         while (selected.length < maxToSelect) {
-            const randomWord = words[Math.floor(Math.random() * words.length)];
-
-            if (selected.indexOf(randomWord) < 0) {
-                selected.push(randomWord);
-            }
+            const randomWordsIndex = Math.floor(Math.random() * words.length);
+            const selectedWord = words[randomWordsIndex];
+            words.splice(randomWordsIndex, 1);
+            selected.push(selectedWord);
         }
 
         return selected;
@@ -101,14 +108,18 @@ export class SuggestedWordsGenerator {
     async getDataMuseWordsFollowing(word: string) {
         try {
             const result = await got("https://api.datamuse.com/words?lc=" + word, {
+                method: "GET",
                 json: true,
-                timeout: 1000
+                timeout: 1000,
+                retry: 0,
+                agent: this.keepAliveAgent
             });
 
             let wordsWithScores = result.body as Array<WordWithScore>;
             wordsWithScores = wordsWithScores.filter(wordWithScore => wordWithScore.word !== ".");
             return wordsWithScores.map(wordWithScore => wordWithScore.word);
         } catch (error) {
+            console.log("Error contacting DataMuse API", error);
             return [];
         }
     }

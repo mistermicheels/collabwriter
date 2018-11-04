@@ -3,6 +3,7 @@ import expressWs from "express-ws";
 import ws from "ws";
 
 import { Controller } from "./Controller";
+import { SocketMessage } from "./SocketMessage";
 
 export class Server {
 
@@ -35,13 +36,13 @@ export class Server {
         this.app.listen(port, () => console.log(`Application booted and listening on port ${port}`));
     }
 
-    broadcastMessage(messageObject: object) {
+    broadcastMessage(messageObject: SocketMessage) {
         this.webSocketServer.clients.forEach((client) => {
             client.send(JSON.stringify(messageObject));
         });
     }
 
-    sendMessageToClient(client: ws, messageObject: object) {
+    sendMessageToClient(client: ws, messageObject: SocketMessage) {
         if (this.webSocketServer.clients.has(client)) {
             client.send(JSON.stringify(messageObject));
         }

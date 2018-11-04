@@ -24,6 +24,8 @@ export class Controller {
     private voteNumber: number;
     private percentVotingTimePassed: number;
 
+    private newSuggestedWordsPromise: Promise<string[]>;
+
     constructor(
         suggestedWordsGenerator: SuggestedWordsGenerator, textTracker: TextTracker, votesTracker: VotesTracker,
         votingClock: VotingClock
@@ -43,12 +45,17 @@ export class Controller {
         this.fullText = this.textTracker.getFullText();
         this.lastVoteResult = this.votesTracker.getVoteResult();
 
+        this.startNewSuggestedWordsGeneration();
         await this.startNewVote();
     }
 
-    private async startNewVote() {
-        this.newWordChoices = await this.suggestedWordsGenerator.getSuggestedWords(
+    private startNewSuggestedWordsGeneration() {
+        this.newSuggestedWordsPromise = this.suggestedWordsGenerator.getSuggestedWords(
             this.textTracker.getLastWord(), this.textTracker.getLastActualWord());
+    }
+
+    private async startNewVote() {
+        this.newWordChoices = await this.newSuggestedWordsPromise;
 
         this.votesTracker.startNewVote(this.newWordChoices);
         this.voteNumber = this.votesTracker.getCurrentVoteNumber();
@@ -103,7 +110,6 @@ export class Controller {
             this.startNewVote();
         } else if (tickCount === 7) {
             this.percentVotingTimePassed = 100;
-
             this.lastVoteResult = this.votesTracker.getVoteResult();
 
             if (this.lastVoteResult.selectedWord) {
@@ -112,6 +118,7 @@ export class Controller {
             }
 
             this.sendLastVote();
+            this.startNewSuggestedWordsGeneration();
             this.votingClock.tick();
         } else {
             this.percentVotingTimePassed = Math.floor(100 * tickCount / 7);
