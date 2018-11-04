@@ -38,13 +38,13 @@ export class Server {
 
     broadcastMessage(messageObject: SocketMessage) {
         this.webSocketServer.clients.forEach((client) => {
-            client.send(JSON.stringify(messageObject));
+            client.send(JSON.stringify(messageObject), error => { });
         });
     }
 
     sendMessageToClient(client: ws, messageObject: SocketMessage) {
         if (this.webSocketServer.clients.has(client)) {
-            client.send(JSON.stringify(messageObject));
+            client.send(JSON.stringify(messageObject), error => { });
         }
     }
 
