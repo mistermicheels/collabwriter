@@ -50,6 +50,7 @@ socket.onmessage = function (event) {
 function processResetMessage(message) {
     currentTextWords = message.fullText.split(" ");
     initializeCurrentText();
+    setTextInModalFromCurrentTextWords();
     window.addEventListener("resize", initializeCurrentText);
 
     updateLastChoiceInfo(message);
@@ -70,6 +71,10 @@ function processNewVoteMessage(message) {
 
 function processTickMessage(message) {
     updateProgressBarAndActiveUsers(message);
+}
+
+function setTextInModalFromCurrentTextWords() {
+    document.getElementById("fullTextInModal").textContent = currentTextWords.join(" ");
 }
 
 function initializeCurrentText() {
@@ -186,6 +191,7 @@ function updateProgressBarAndActiveUsers(message) {
 function addLastSelectedWordIfDefined(message) {
     if (message.selectedLastRound) {
         addWord(message.selectedLastRound);
+        setTextInModalFromCurrentTextWords();
     }
 }
 
@@ -248,8 +254,4 @@ function choiceButtonClicked(choiceNumber) {
     };
 
     socket.send(JSON.stringify(voteMessage));
-}
-
-function setTextInModal() {
-    document.getElementById("fullTextInModal").textContent = currentTextWords.join(" ");
 }
