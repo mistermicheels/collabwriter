@@ -4,8 +4,8 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
+    "start": "ts-node-dev src/index.ts",
     "build-ts": "tsc",
-    "watch-ts": "tsc -w",
     "postinstall": "npm run build-ts"
   },
   "author": "Maarten Michiels",
@@ -24,6 +24,7 @@
     "@types/node": "^10.12.2",
     "@types/redis": "^2.8.7",
     "ts-node": "^7.0.1",
+    "ts-node-dev": "^1.0.0-pre.44",
     "tslint": "^5.11.0",
     "typescript": "^3.1.6"
   }
