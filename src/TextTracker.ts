@@ -14,11 +14,7 @@ export class TextTracker {
     }
 
     async initializeFromStorage() {
-        let retrievedText: string;
-
-        try {
-            retrievedText = await this.textStorage.retrieveText();
-        } catch (error) {}
+        const retrievedText = await this.textStorage.retrieveText();
 
         this.fullText = retrievedText || "This is the start of the story.";
 
