@@ -1,7 +1,6 @@
 import { Controller } from "./Controller";
 
 export class VotingClock {
-
     private controller: Controller;
 
     private tickCount = 0;
@@ -20,5 +19,4 @@ export class VotingClock {
             this.controller.onVotingClockTickCompleted(this.tickCount);
         }, 1000);
     }
-
 }

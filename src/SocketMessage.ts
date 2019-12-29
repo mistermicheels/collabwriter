@@ -28,16 +28,26 @@ interface OutgoingTickData {
     activeUsers: number;
 }
 
-export interface OutgoingResetMessage extends SocketMessage, OutgoingLastVoteData, OutgoingNewVoteData, OutgoingTickData {
+export interface OutgoingResetMessage
+    extends SocketMessage,
+        OutgoingLastVoteData,
+        OutgoingNewVoteData,
+        OutgoingTickData {
     type: "reset";
     fullText: string;
 }
 
-export interface OutgoingLastVoteMessage extends SocketMessage, OutgoingLastVoteData, OutgoingTickData {
+export interface OutgoingLastVoteMessage
+    extends SocketMessage,
+        OutgoingLastVoteData,
+        OutgoingTickData {
     type: "lastVote";
 }
 
-export interface OutgoingNewVoteMessage extends SocketMessage, OutgoingNewVoteData, OutgoingTickData {
+export interface OutgoingNewVoteMessage
+    extends SocketMessage,
+        OutgoingNewVoteData,
+        OutgoingTickData {
     type: "newVote";
 }
 

@@ -5,7 +5,6 @@ export interface VoteResult {
 }
 
 export class VotesTracker {
-
     private choiceVotes = new Map<string, number>();
     private currentVoteNumber = 1;
 
@@ -55,5 +54,4 @@ export class VotesTracker {
             totalVotes
         };
     }
-
 }

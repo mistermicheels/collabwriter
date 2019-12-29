@@ -1,6 +1,13 @@
 import ws from "ws";
 
-import { SocketMessage, isIncomingVoteMessage, OutgoingResetMessage, OutgoingTickMessage, OutgoingNewVoteMessage, OutgoingLastVoteMessage } from "./SocketMessage";
+import {
+    SocketMessage,
+    isIncomingVoteMessage,
+    OutgoingResetMessage,
+    OutgoingTickMessage,
+    OutgoingNewVoteMessage,
+    OutgoingLastVoteMessage
+} from "./SocketMessage";
 import { Server } from "./Server";
 import { VoteResult, VotesTracker } from "./VotesTracker";
 import { TextTracker } from "./TextTracker";
@@ -8,7 +15,6 @@ import { SuggestedWordsGenerator } from "./SuggestedWordsGenerator";
 import { VotingClock } from "./VotingClock";
 
 export class Controller {
-
     private readonly suggestedWordsGenerator: SuggestedWordsGenerator;
     private readonly textTracker: TextTracker;
     private readonly votesTracker: VotesTracker;
@@ -27,7 +33,9 @@ export class Controller {
     private newSuggestedWordsPromise: Promise<string[]>;
 
     constructor(
-        suggestedWordsGenerator: SuggestedWordsGenerator, textTracker: TextTracker, votesTracker: VotesTracker,
+        suggestedWordsGenerator: SuggestedWordsGenerator,
+        textTracker: TextTracker,
+        votesTracker: VotesTracker,
         votingClock: VotingClock
     ) {
         this.suggestedWordsGenerator = suggestedWordsGenerator;
@@ -51,7 +59,9 @@ export class Controller {
 
     private startNewSuggestedWordsGeneration() {
         this.newSuggestedWordsPromise = this.suggestedWordsGenerator.getSuggestedWords(
-            this.textTracker.getLastWord(), this.textTracker.getLastActualWord());
+            this.textTracker.getLastWord(),
+            this.textTracker.getLastActualWord()
+        );
     }
 
     private async startNewVote() {
@@ -104,7 +114,7 @@ export class Controller {
     }
 
     onVotingClockTickCompleted(tickCount: number) {
-        this.percentVotingTimePassed = Math.min(100, 100 * tickCount / 7);
+        this.percentVotingTimePassed = Math.min(100, (100 * tickCount) / 7);
 
         if (tickCount === 8) {
             this.startNewVote();
@@ -121,7 +131,7 @@ export class Controller {
             this.startNewSuggestedWordsGeneration();
             this.votingClock.tick();
         } else {
-            this.percentVotingTimePassed = Math.floor(100 * tickCount / 7);
+            this.percentVotingTimePassed = Math.floor((100 * tickCount) / 7);
             this.sendTick();
             this.votingClock.tick();
         }
@@ -149,5 +159,4 @@ export class Controller {
 
         this.server.broadcastMessage(tickMessage);
     }
-
 }

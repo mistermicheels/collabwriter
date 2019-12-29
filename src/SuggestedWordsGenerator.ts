@@ -9,7 +9,6 @@ interface WordWithScore {
 }
 
 export class SuggestedWordsGenerator {
-
     // this is required to keep SSL connections alive, greatly improving request performance
     private readonly keepAliveAgent = new https.Agent({ keepAlive: true });
 
@@ -28,7 +27,10 @@ export class SuggestedWordsGenerator {
         suggestions.push(...this.selectDistinctRandomWords(dataMuseSuggestions, 6));
         this.completeUsingRandomSuggestions(suggestions, 12);
         this.shuffleSuggestions(suggestions);
-        suggestions = suggestions.map(suggestion => suggestion[0].toUpperCase() + suggestion.substring(1));
+
+        suggestions = suggestions.map(
+            suggestion => suggestion[0].toUpperCase() + suggestion.substring(1)
+        );
 
         return suggestions;
     }
@@ -65,7 +67,10 @@ export class SuggestedWordsGenerator {
         return selected;
     }
 
-    completeUsingRandomSuggestions(alreadySelected: Array<string>, targetNumberSuggestions: number) {
+    completeUsingRandomSuggestions(
+        alreadySelected: Array<string>,
+        targetNumberSuggestions: number
+    ) {
         while (alreadySelected.length < targetNumberSuggestions) {
             const randomWord = randomWords();
 
@@ -97,7 +102,7 @@ export class SuggestedWordsGenerator {
         suggestions.push(...this.selectDistinctRandomWords(others, 4));
         this.completeUsingRandomSuggestions(suggestions, 11);
         this.shuffleSuggestions(suggestions);
-        suggestions = suggestions.map(suggestion => (suggestion === "i") ? "I" : suggestion);
+        suggestions = suggestions.map(suggestion => (suggestion === "i" ? "I" : suggestion));
 
         // always start suggestions with a period to end the sentence
         suggestions.unshift(".");
@@ -123,5 +128,4 @@ export class SuggestedWordsGenerator {
             return [];
         }
     }
-
 }

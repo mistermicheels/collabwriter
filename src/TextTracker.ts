@@ -1,7 +1,6 @@
 import { TextStorage } from "./TextStorage";
 
 export class TextTracker {
-
     public static readonly MAX_WORDS = 2500;
 
     private readonly textStorage: TextStorage;
@@ -19,7 +18,7 @@ export class TextTracker {
 
         try {
             retrievedText = await this.textStorage.retrieveText();
-        } catch (error) { }
+        } catch (error) {}
 
         this.fullText = retrievedText || "This is the start of the story.";
 
@@ -67,8 +66,9 @@ export class TextTracker {
         const sentenceParts = this.fullText.split(" ");
 
         if (sentenceParts.length > TextTracker.MAX_WORDS) {
-            this.fullText = sentenceParts.slice(sentenceParts.length - TextTracker.MAX_WORDS).join(" ");
+            this.fullText = sentenceParts
+                .slice(sentenceParts.length - TextTracker.MAX_WORDS)
+                .join(" ");
         }
     }
-
 }

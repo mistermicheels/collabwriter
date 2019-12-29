@@ -6,7 +6,6 @@ import { Controller } from "./Controller";
 import { SocketMessage } from "./SocketMessage";
 
 export class Server {
-
     private readonly app: expressWs.Application;
     private readonly webSocketServer: ws.Server;
 
@@ -18,13 +17,13 @@ export class Server {
 
         this.app.use("/", express.static("frontend"));
 
-        this.app.ws("/socket", (ws) => {
+        this.app.ws("/socket", ws => {
             controller.onSocketOpened(this.webSocketServer.clients.size, ws);
 
-            ws.on("message", (data) => {
+            ws.on("message", data => {
                 try {
                     controller.onSocketMessage(JSON.parse(data.toString()));
-                } catch (error) { }
+                } catch (error) {}
             });
 
             ws.on("close", () => {
@@ -33,19 +32,21 @@ export class Server {
         });
 
         controller.initialize(this);
-        this.app.listen(port, () => console.log(`Application booted and listening on port ${port}`));
+
+        this.app.listen(port, () =>
+            console.log(`Application booted and listening on port ${port}`)
+        );
     }
 
     broadcastMessage(messageObject: SocketMessage) {
-        this.webSocketServer.clients.forEach((client) => {
-            client.send(JSON.stringify(messageObject), error => { });
+        this.webSocketServer.clients.forEach(client => {
+            client.send(JSON.stringify(messageObject), error => {});
         });
     }
 
     sendMessageToClient(client: ws, messageObject: SocketMessage) {
         if (this.webSocketServer.clients.has(client)) {
-            client.send(JSON.stringify(messageObject), error => { });
+            client.send(JSON.stringify(messageObject), error => {});
         }
     }
-
 }

@@ -2,7 +2,6 @@ import util from "util";
 import redis from "redis";
 
 export class TextStorage {
-
     private readonly collabWriterTextKey = "collabwritertext";
 
     private readonly client: redis.RedisClient;
@@ -16,7 +15,7 @@ export class TextStorage {
 
     storeText(text: string): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.client.set(this.collabWriterTextKey, text, (error) => {
+            this.client.set(this.collabWriterTextKey, text, error => {
                 if (error) {
                     reject(error);
                 } else {
@@ -37,5 +36,4 @@ export class TextStorage {
             });
         });
     }
-
 }

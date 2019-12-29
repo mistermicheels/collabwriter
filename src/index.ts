@@ -20,7 +20,12 @@ async function init() {
     const votesTracker = new VotesTracker();
     const votingClock = new VotingClock();
 
-    const controller = new Controller(suggestedWordsGenerator, textTracker, votesTracker, votingClock);
+    const controller = new Controller(
+        suggestedWordsGenerator,
+        textTracker,
+        votesTracker,
+        votingClock
+    );
 
     new Server(port, controller);
 }
@@ -37,6 +42,6 @@ function determineRedisUrl() {
     if (process.env.REDIS_URL) {
         return process.env.REDIS_URL;
     } else {
-        return "redis://192.168.56.101:6379";
+        return "redis://localhost:6379";
     }
 }
