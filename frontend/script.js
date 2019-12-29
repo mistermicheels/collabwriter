@@ -5,7 +5,7 @@ const activeUsersElement = document.getElementById("activeUsers");
 const lastChoiceInfoElement = document.getElementById("lastChoiceInfo");
 const progressBarElement = document.getElementById("progressBar");
 
-const isTouch =  !!("ontouchstart" in window) || window.navigator.msMaxTouchPoints > 0;
+const isTouch = !!("ontouchstart" in window) || window.navigator.msMaxTouchPoints > 0;
 
 const choiceButtonElements = [];
 
@@ -31,10 +31,11 @@ let ownChoiceLastRound = undefined;
 // socket setup
 const socket = new WebSocket("ws://" + location.host + "/socket");
 
-socket.onmessage = function (event) {
+socket.onmessage = function(event) {
     const message = JSON.parse(event.data);
 
     if (message.type === "reset") {
+        // will be fired on (re)connect
         processResetMessage(message);
     } else if (message.type === "lastVote") {
         processLastVoteMessage(message);
@@ -83,7 +84,13 @@ function initializeCurrentText() {
     const lastChoiceInfoElementHeight = lastChoiceInfoElement.clientHeight + 18;
     const progressHeight = document.getElementById("progress").clientHeight + 20;
     const suggestionsHeight = document.getElementById("suggestions").clientHeight;
-    const heightAvailableForTextArea = windowHeight - headerHeight - lastChoiceInfoElementHeight - progressHeight - suggestionsHeight;
+
+    const heightAvailableForTextArea =
+        windowHeight -
+        headerHeight -
+        lastChoiceInfoElementHeight -
+        progressHeight -
+        suggestionsHeight;
 
     currentTextWithLineBreaks = "";
     setCurrentTextOnElement("");
@@ -94,13 +101,15 @@ function initializeCurrentText() {
         const previousHeight = getTextAreaHeight();
         setCurrentTextOnElement(currentWord + " " + currentTextWithLineBreaks);
         const newHeight = getTextAreaHeight();
+        const shownWords = currentTextWords.length - i;
 
         if (newHeight === previousHeight) {
             currentTextWithLineBreaks = currentWord + " " + currentTextWithLineBreaks;
-        } else if (newHeight <= heightAvailableForTextArea || currentTextWords.length - i <= minimumInitialWords) {
+        } else if (newHeight <= heightAvailableForTextArea || shownWords <= minimumInitialWords) {
             currentTextWithLineBreaks = currentWord + "\r\n" + currentTextWithLineBreaks;
             setCurrentTextOnElement(currentTextWithLineBreaks);
         } else {
+            // don't add this word or any other ones
             setCurrentTextOnElement(currentTextWithLineBreaks);
             break;
         }
@@ -118,9 +127,12 @@ function getTextAreaHeight() {
 function updateLastChoiceInfo(message) {
     if (message.selectedLastRound) {
         lastChoiceInfoElement.textContent =
-            "The last voting round chose '" + message.selectedLastRound
-            + "' with " + message.selectedLastRoundVotes
-            + " votes out of " + message.lastRoundTotalVotes;
+            "The last voting round chose '" +
+            message.selectedLastRound +
+            "' with " +
+            message.selectedLastRoundVotes +
+            " votes out of " +
+            message.lastRoundTotalVotes;
 
         if (ownChoiceLastRound !== undefined) {
             visualizeOwnChoiceVsSelected(ownChoiceLastRound, message.selectedLastRound);
@@ -131,7 +143,7 @@ function updateLastChoiceInfo(message) {
 }
 
 function visualizeOwnChoiceVsSelected(ownChoiceLastRound, selectedLastRound) {
-    choiceButtonElements.forEach(function (buttonElement, index) {
+    choiceButtonElements.forEach(function(buttonElement, index) {
         if (wordChoices[index] === selectedLastRound) {
             buttonElement.classList.remove("btn-primary");
             buttonElement.classList.remove("btn-outline-primary");
@@ -174,7 +186,7 @@ function updateChoiceButtons() {
 }
 
 function setChoiceButtonsEnabled(enabled) {
-    choiceButtonElements.forEach(function (element) {
+    choiceButtonElements.forEach(function(element) {
         element.disabled = !enabled;
     });
 }
@@ -215,7 +227,10 @@ function addPeriod() {
         currentTextWithLineBreaks = currentTextWithLineBreaks + ".";
     } else {
         const positionOfFirstLineBreak = currentTextWithLineBreaks.indexOf("\n");
-        currentTextWithLineBreaks = currentTextWithLineBreaks.substring(positionOfFirstLineBreak + 1) + ".\r\n";
+
+        currentTextWithLineBreaks =
+            currentTextWithLineBreaks.substring(positionOfFirstLineBreak + 1) + ".\r\n";
+
         setCurrentTextOnElement(currentTextWithLineBreaks);
     }
 }
@@ -231,7 +246,10 @@ function addActualNewWord(newWord) {
         currentTextWithLineBreaks = currentTextWithLineBreaks + " " + newWord;
     } else {
         const positionOfFirstLineBreak = currentTextWithLineBreaks.indexOf("\n");
-        currentTextWithLineBreaks = currentTextWithLineBreaks.substring(positionOfFirstLineBreak + 1) + "\r\n" + newWord;
+
+        currentTextWithLineBreaks =
+            currentTextWithLineBreaks.substring(positionOfFirstLineBreak + 1) + "\r\n" + newWord;
+
         setCurrentTextOnElement(currentTextWithLineBreaks);
     }
 }
