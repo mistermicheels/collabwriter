@@ -35,7 +35,7 @@ socket.onmessage = function(event) {
     const message = JSON.parse(event.data);
 
     if (message.type === "reset") {
-        // will be fired on (re)connect
+        // will be fired on connect
         processResetMessage(message);
     } else if (message.type === "lastVote") {
         processLastVoteMessage(message);
@@ -227,6 +227,8 @@ function addPeriod() {
         currentTextWithLineBreaks = currentTextWithLineBreaks + ".";
     } else {
         const positionOfFirstLineBreak = currentTextWithLineBreaks.indexOf("\n");
+
+        // the current line had space for the "next word placeholder", so the period itself will still fit
 
         currentTextWithLineBreaks =
             currentTextWithLineBreaks.substring(positionOfFirstLineBreak + 1) + ".\r\n";
