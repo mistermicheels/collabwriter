@@ -37,15 +37,17 @@ describe("VotesTracker", () => {
         votesTracker.startNewVote(["first", "second"]);
         const firstVoteNumber = votesTracker.getCurrentVoteNumber();
 
-        votesTracker.startNewVote(["third", "fourth"]);
+        votesTracker.startNewVote(["third", "second"]);
         votesTracker.registerVote(firstVoteNumber, "first");
         votesTracker.registerVote(firstVoteNumber, "first");
         votesTracker.registerVote(firstVoteNumber, "second");
         const secondVoteNumber = votesTracker.getCurrentVoteNumber();
         votesTracker.registerVote(secondVoteNumber, "third");
+        votesTracker.registerVote(secondVoteNumber, "third");
+        votesTracker.registerVote(secondVoteNumber, "second");
 
         const result = votesTracker.getVoteResult();
-        expect(result).toEqual({ selectedWord: "third", selectedWordVotes: 1, totalVotes: 1 });
+        expect(result).toEqual({ selectedWord: "third", selectedWordVotes: 2, totalVotes: 3 });
     });
 
     test("it should ignore votes for words not in the current voting round", () => {
