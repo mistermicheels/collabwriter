@@ -9,6 +9,8 @@ interface WordWithScore {
 }
 
 export class SuggestedWordsGenerator {
+    private static readonly DATAMUSE_TIMEOUT = 1000;
+
     // this is required to keep SSL connections alive, greatly improving request performance
     private readonly keepAliveAgent = new https.Agent({ keepAlive: true });
 
@@ -40,7 +42,7 @@ export class SuggestedWordsGenerator {
             const result = await got("https://api.datamuse.com/words?rel_trg=" + word, {
                 method: "GET",
                 json: true,
-                timeout: 1000,
+                timeout: SuggestedWordsGenerator.DATAMUSE_TIMEOUT,
                 retry: 0,
                 agent: this.keepAliveAgent
             });
@@ -115,7 +117,7 @@ export class SuggestedWordsGenerator {
             const result = await got("https://api.datamuse.com/words?lc=" + word, {
                 method: "GET",
                 json: true,
-                timeout: 1000,
+                timeout: SuggestedWordsGenerator.DATAMUSE_TIMEOUT,
                 retry: 0,
                 agent: this.keepAliveAgent
             });

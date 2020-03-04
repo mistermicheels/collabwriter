@@ -1,7 +1,8 @@
 import { VotingClockListener } from "./VotingClockListener";
 
 export class VotingClock {
-    private static CLOCK_INTERVAL = 1000;
+    private static readonly CLOCK_INTERVAL = 1000;
+    private static readonly ROUND_DURATION = 7;
 
     private listener: VotingClockListener;
 
@@ -16,10 +17,10 @@ export class VotingClock {
     private tick() {
         this.tickCount = this.tickCount + 1;
 
-        if (this.tickCount < 7) {
-            const percentVotingTimePassed = Math.round((100 * this.tickCount) / 7);
-            this.listener.onPercentVotingTimePassedUpdated(percentVotingTimePassed);
-        } else if (this.tickCount === 7) {
+        if (this.tickCount < VotingClock.ROUND_DURATION) {
+            const percentPassed = Math.round(100 * (this.tickCount / VotingClock.ROUND_DURATION));
+            this.listener.onPercentVotingTimePassedUpdated(percentPassed);
+        } else if (this.tickCount === VotingClock.ROUND_DURATION) {
             this.listener.onCurrentVoteFinished();
         } else {
             this.listener.onNewVoteStarting();
