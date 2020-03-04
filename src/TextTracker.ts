@@ -3,15 +3,11 @@ import { TextStorage } from "./TextStorage";
 export class TextTracker {
     public static readonly MAX_WORDS = 2500;
 
-    private readonly textStorage: TextStorage;
-
     private fullText: string;
     private lastWord: string;
     private lastActualWord: string;
 
-    constructor(textStorage: TextStorage) {
-        this.textStorage = textStorage;
-    }
+    constructor(private readonly textStorage: TextStorage) {}
 
     async initializeFromStorage() {
         const retrievedText = await this.textStorage.retrieveText();
@@ -54,7 +50,7 @@ export class TextTracker {
 
         this.truncateTextIfTooLong();
 
-        // don't await we don't need to be sure it succeeds
+        // don't await, we don't need to be sure it succeeds
         this.textStorage.storeText(this.fullText);
     }
 

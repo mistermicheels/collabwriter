@@ -13,17 +13,13 @@ import { VoteResult, VotesTracker } from "./VotesTracker";
 import { TextTracker } from "./TextTracker";
 import { SuggestedWordsGenerator } from "./SuggestedWordsGenerator";
 import { VotingClock } from "./VotingClock";
+import { ServerListener } from "./ServerListener";
+import { VotingClockListener } from "./VotingClockListener";
 
-export class Controller {
-    private readonly suggestedWordsGenerator: SuggestedWordsGenerator;
-    private readonly textTracker: TextTracker;
-    private readonly votesTracker: VotesTracker;
-    private readonly votingClock: VotingClock;
-
+export class Controller implements ServerListener, VotingClockListener {
     private server: Server;
     private activeUsers: number;
 
-    private fullText: string;
     private lastVoteResult: VoteResult;
 
     private newWordChoices: string[];
@@ -33,28 +29,23 @@ export class Controller {
     private newSuggestedWordsPromise: Promise<string[]>;
 
     constructor(
-        suggestedWordsGenerator: SuggestedWordsGenerator,
-        textTracker: TextTracker,
-        votesTracker: VotesTracker,
-        votingClock: VotingClock
-    ) {
-        this.suggestedWordsGenerator = suggestedWordsGenerator;
-        this.textTracker = textTracker;
-        this.votesTracker = votesTracker;
-        this.votingClock = votingClock;
-
-        this.votingClock.setController(this);
-    }
+        private readonly suggestedWordsGenerator: SuggestedWordsGenerator,
+        private readonly textTracker: TextTracker,
+        private readonly votesTracker: VotesTracker,
+        private readonly votingClock: VotingClock
+    ) {}
 
     async initialize(server: Server) {
+        server.initialize(this);
         this.server = server;
         this.activeUsers = 0;
 
-        this.fullText = this.textTracker.getFullText();
         this.lastVoteResult = this.votesTracker.getVoteResult();
 
         this.startNewSuggestedWordsGeneration();
         await this.startNewVote();
+
+        this.votingClock.initialize(this);
     }
 
     private startNewSuggestedWordsGeneration() {
@@ -70,8 +61,6 @@ export class Controller {
         this.votesTracker.startNewVote(this.newWordChoices);
         this.voteNumber = this.votesTracker.getCurrentVoteNumber();
 
-        this.votingClock.resetTickCount();
-        this.votingClock.tick();
         this.percentVotingTimePassed = 0;
 
         const message: OutgoingNewVoteMessage = {
@@ -90,7 +79,7 @@ export class Controller {
 
         const resetMessage: OutgoingResetMessage = {
             type: "reset",
-            fullText: this.fullText,
+            fullText: this.textTracker.getFullText(),
             selectedLastRound: this.lastVoteResult.selectedWord,
             selectedLastRoundVotes: this.lastVoteResult.selectedWordVotes,
             lastRoundTotalVotes: this.lastVoteResult.totalVotes,
@@ -113,31 +102,29 @@ export class Controller {
         }
     }
 
-    onVotingClockTickCompleted(tickCount: number) {
-        this.percentVotingTimePassed = Math.min(100, (100 * tickCount) / 7);
+    onPercentVotingTimePassedUpdated(percentVotingTimePassed: number): void {
+        this.percentVotingTimePassed = percentVotingTimePassed;
 
-        if (tickCount === 8) {
-            this.startNewVote();
-        } else if (tickCount === 7) {
-            this.percentVotingTimePassed = 100;
-            this.lastVoteResult = this.votesTracker.getVoteResult();
+        const tickMessage: OutgoingTickMessage = {
+            type: "tick",
+            percentVotingTimePassed: this.percentVotingTimePassed,
+            activeUsers: this.activeUsers
+        };
 
-            if (this.lastVoteResult.selectedWord) {
-                this.textTracker.addNewWord(this.lastVoteResult.selectedWord);
-                this.fullText = this.textTracker.getFullText();
-            }
-
-            this.sendLastVote();
-            this.startNewSuggestedWordsGeneration();
-            this.votingClock.tick();
-        } else {
-            this.percentVotingTimePassed = Math.floor((100 * tickCount) / 7);
-            this.sendTick();
-            this.votingClock.tick();
-        }
+        this.server.broadcastMessage(tickMessage);
     }
 
-    private sendLastVote() {
+    onCurrentVoteFinished(): void {
+        this.percentVotingTimePassed = 100;
+        this.lastVoteResult = this.votesTracker.getVoteResult();
+
+        if (this.lastVoteResult.selectedWord) {
+            this.textTracker.addNewWord(this.lastVoteResult.selectedWord);
+        }
+
+        // allow plenty of time to generate suggested words for next round
+        this.startNewSuggestedWordsGeneration();
+
         const lastVoteMessage: OutgoingLastVoteMessage = {
             type: "lastVote",
             selectedLastRound: this.lastVoteResult.selectedWord,
@@ -150,13 +137,7 @@ export class Controller {
         this.server.broadcastMessage(lastVoteMessage);
     }
 
-    private sendTick() {
-        const tickMessage: OutgoingTickMessage = {
-            type: "tick",
-            percentVotingTimePassed: this.percentVotingTimePassed,
-            activeUsers: this.activeUsers
-        };
-
-        this.server.broadcastMessage(tickMessage);
+    onNewVoteStarting(): void {
+        this.startNewVote();
     }
 }

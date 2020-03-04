@@ -1,22 +1,29 @@
-import { Controller } from "./Controller";
+import { VotingClockListener } from "./VotingClockListener";
 
 export class VotingClock {
-    private controller: Controller;
+    private static CLOCK_INTERVAL = 1000;
+
+    private listener: VotingClockListener;
 
     private tickCount = 0;
 
-    setController(controller: Controller) {
-        this.controller = controller;
+    initialize(listener: VotingClockListener) {
+        this.listener = listener;
+
+        setInterval(() => this.tick(), VotingClock.CLOCK_INTERVAL);
     }
 
-    resetTickCount() {
-        this.tickCount = 0;
-    }
+    private tick() {
+        this.tickCount = this.tickCount + 1;
 
-    tick() {
-        setTimeout(() => {
-            this.tickCount = this.tickCount + 1;
-            this.controller.onVotingClockTickCompleted(this.tickCount);
-        }, 1000);
+        if (this.tickCount < 7) {
+            const percentVotingTimePassed = Math.round((100 * this.tickCount) / 7);
+            this.listener.onPercentVotingTimePassedUpdated(percentVotingTimePassed);
+        } else if (this.tickCount === 7) {
+            this.listener.onCurrentVoteFinished();
+        } else {
+            this.listener.onNewVoteStarting();
+            this.tickCount = 0;
+        }
     }
 }

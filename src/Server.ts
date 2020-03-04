@@ -2,49 +2,58 @@ import express from "express";
 import expressWs from "express-ws";
 import ws from "ws";
 
-import { Controller } from "./Controller";
 import { SocketMessage } from "./SocketMessage";
+import { ServerListener } from "./ServerListener";
 
 export class Server {
-    private readonly app: expressWs.Application;
-    private readonly webSocketServer: ws.Server;
+    private webSocketServer: ws.Server;
 
-    constructor(port: number, controller: Controller) {
+    constructor(private readonly port: number) {}
+
+    initialize(listener: ServerListener) {
         const expressWsInstance = expressWs(express());
-
-        this.app = expressWsInstance.app;
         this.webSocketServer = expressWsInstance.getWss();
 
-        this.app.use("/", express.static("frontend"));
+        const app = expressWsInstance.app;
 
-        this.app.ws("/socket", ws => {
-            controller.onSocketOpened(this.webSocketServer.clients.size, ws);
+        app.use("/", express.static("frontend"));
 
-            ws.on("message", data => {
+        app.ws("/socket", client => {
+            listener.onSocketOpened(this.webSocketServer.clients.size, client);
+
+            client.on("message", data => {
                 try {
-                    controller.onSocketMessage(JSON.parse(data.toString()));
+                    listener.onSocketMessage(JSON.parse(data.toString()));
                 } catch (error) {}
             });
 
-            ws.on("close", () => {
-                controller.onSocketClosed(this.webSocketServer.clients.size);
+            client.on("close", () => {
+                listener.onSocketClosed(this.webSocketServer.clients.size);
             });
         });
 
-        controller.initialize(this);
-
-        this.app.listen(port, () =>
-            console.log(`Application booted and listening on port ${port}`)
+        app.listen(this.port, () =>
+            console.log(`Application booted and listening on port ${this.port}`)
         );
     }
 
     broadcastMessage(messageObject: SocketMessage) {
+        this.checkInitialized();
+
         this.webSocketServer.clients.forEach(client => {
             client.send(JSON.stringify(messageObject), error => {});
         });
     }
 
+    private checkInitialized() {
+        if (!this.webSocketServer) {
+            throw new Error("Server not initialized yet");
+        }
+    }
+
     sendMessageToClient(client: ws, messageObject: SocketMessage) {
+        this.checkInitialized();
+
         if (this.webSocketServer.clients.has(client)) {
             client.send(JSON.stringify(messageObject), error => {});
         }

@@ -27,7 +27,9 @@ async function init() {
         votingClock
     );
 
-    new Server(port, controller);
+    const server = new Server(port);
+
+    controller.initialize(server);
 }
 
 function determinePort() {
