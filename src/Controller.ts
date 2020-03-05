@@ -17,7 +17,6 @@ import { ServerListener } from "./ServerListener";
 import { VotingClockListener } from "./VotingClockListener";
 
 export class Controller implements ServerListener, VotingClockListener {
-    private server: Server;
     private activeUsers: number;
 
     private lastVoteResult: VoteResult;
@@ -32,12 +31,14 @@ export class Controller implements ServerListener, VotingClockListener {
         private readonly suggestedWordsGenerator: SuggestedWordsGenerator,
         private readonly textTracker: TextTracker,
         private readonly votesTracker: VotesTracker,
-        private readonly votingClock: VotingClock
+        private readonly votingClock: VotingClock,
+        private readonly server: Server
     ) {}
 
-    async initialize(server: Server) {
-        server.initialize(this);
-        this.server = server;
+    async initialize() {
+        await this.textTracker.initializeFromStorage();
+
+        this.server.initialize(this);
         this.activeUsers = 0;
 
         this.lastVoteResult = this.votesTracker.getVoteResult();

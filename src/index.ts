@@ -13,23 +13,20 @@ async function init() {
     const redisUrl = determineRedisUrl();
 
     const suggestedWordsGenerator = new SuggestedWordsGenerator();
-
     const textTracker = new TextTracker(new TextStorage(redisUrl));
-    await textTracker.initializeFromStorage();
-
     const votesTracker = new VotesTracker();
     const votingClock = new VotingClock();
+    const server = new Server(port);
 
     const controller = new Controller(
         suggestedWordsGenerator,
         textTracker,
         votesTracker,
-        votingClock
+        votingClock,
+        server
     );
 
-    const server = new Server(port);
-
-    controller.initialize(server);
+    controller.initialize();
 }
 
 function determinePort() {
