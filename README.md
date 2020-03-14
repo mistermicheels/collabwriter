@@ -1,6 +1,6 @@
 # CollabWriter
 
-This is CollabWriter, a massively multiplayer online democratic suggestion-based writing application. This application allows people from all over the world to collaborate on writing a story. Words are added, one by one, by voting on which word to use from a set of suggestions. Some of the suggestions are based on the last chosen word, some are random. After each round, the suggestion that received the most votes is added to the current text. If no votes were cast during a round, nothing is added to the text and the application presents a new set of suggestions. As long as people are voting, the story gets one word longer with each voting round (not entirely true, because the period to end a sentence also needs a voting round). Even without other people interfering with your sentence-building skills, it may be a challenge in itself to build some sentences that look like a sane person wrote them. Some parts of the text will probably look like they were written by a drunk toddler and five layers of Google Translate. In any case, have fun and feel free to contribute to the story.
+This is CollabWriter, a massively multiplayer online democratic suggestion-based writing application.
 
 [Click here to open the application](http://collabwriter.herokuapp.com/) (you might need to wait for the server to start)
 
