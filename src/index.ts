@@ -10,12 +10,11 @@ init();
 
 async function init() {
     const port = determinePort();
-    const redisUrl = determineRedisUrl();
     const postgresUrl = determinePostgresUrl();
     const enablePostgresSsl = determinePostgresSsl();
 
     const suggestedWordsGenerator = new SuggestedWordsGenerator();
-    const textStorage = new TextStorage(redisUrl, postgresUrl, enablePostgresSsl);
+    const textStorage = new TextStorage(postgresUrl, enablePostgresSsl);
     const textTracker = new TextTracker();
     const votesTracker = new VotesTracker();
     const votingClock = new VotingClock();
@@ -38,14 +37,6 @@ function determinePort() {
         return parseInt(process.env.PORT);
     } else {
         return 3000;
-    }
-}
-
-function determineRedisUrl() {
-    if (process.env.REDIS_URL) {
-        return process.env.REDIS_URL;
-    } else {
-        return "redis://localhost:6379";
     }
 }
 

@@ -1,20 +1,9 @@
-import redis from "redis";
-
 import { Pool, PoolClient, PoolConfig } from "pg";
 
 export class TextStorage {
-    private static readonly REDIS_KEY = "collabwritertext";
-
-    private readonly redisClient: redis.RedisClient;
-
     private readonly postgresPool: Pool;
 
-    constructor(redisUrl: string, postgresUrl: string, enablePostgresSsl: boolean) {
-        this.redisClient = redis.createClient(redisUrl);
-
-        this.redisClient.on("connect", () => console.log("Connected to Redis"));
-        this.redisClient.on("error", (error) => console.error("Redis error " + error));
-
+    constructor(postgresUrl: string, enablePostgresSsl: boolean) {
         const postgresOptions: PoolConfig = {
             connectionString: postgresUrl,
             ssl: enablePostgresSsl,
@@ -51,14 +40,7 @@ export class TextStorage {
     }
 
     async retrieveText(): Promise<string> {
-        let retrievedText = await this.retrieveTextFromPostgres();
-
-        if (!retrievedText) {
-            retrievedText = await this.retrieveTextFromRedis();
-            await this.storeTextInPostgres(retrievedText);
-        }
-
-        return retrievedText;
+        return this.retrieveTextFromPostgres();
     }
 
     async storeTextInPostgres(text: string): Promise<void> {
@@ -70,19 +52,6 @@ export class TextStorage {
             );
 
             console.info("Stored text in Postgres");
-        });
-    }
-
-    retrieveTextFromRedis(): Promise<string> {
-        return new Promise((resolve, reject) => {
-            this.redisClient.get(TextStorage.REDIS_KEY, (error, reply) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    console.info("Retrieved stored text from Redis");
-                    resolve(reply);
-                }
-            });
         });
     }
 
