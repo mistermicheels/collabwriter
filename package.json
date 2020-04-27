@@ -4,8 +4,8 @@
     "description": "",
     "main": "dist/index.js",
     "scripts": {
-        "start": "ts-node-dev src/index.ts",
-        "test": "jest",
+        "start": "cross-env DATABASE_SSL=false ts-node-dev src/index.ts",
+        "test": "jest --silent",
         "build-ts": "tsc",
         "postinstall": "npm run build-ts"
     },
@@ -15,6 +15,7 @@
         "express": "^4.16.4",
         "express-ws": "^4.0.0",
         "got": "^9.3.0",
+        "pg": "^8.0.3",
         "random-words": "^1.1.0",
         "redis": "^2.8.0"
     },
@@ -24,7 +25,9 @@
         "@types/got": "^9.2.0",
         "@types/jest": "^24.0.25",
         "@types/node": "^10.12.2",
+        "@types/pg": "^7.14.3",
         "@types/redis": "^2.8.7",
+        "cross-env": "^7.0.2",
         "jest": "^25.2.7",
         "ts-jest": "^25.3.1",
         "ts-mockito": "^2.5.0",

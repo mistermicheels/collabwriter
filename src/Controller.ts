@@ -6,7 +6,7 @@ import {
     OutgoingResetMessage,
     OutgoingTickMessage,
     OutgoingNewVoteMessage,
-    OutgoingLastVoteMessage
+    OutgoingLastVoteMessage,
 } from "./SocketMessage";
 import { Server } from "./Server";
 import { VoteResult, VotesTracker } from "./VotesTracker";
@@ -15,6 +15,7 @@ import { SuggestedWordsGenerator } from "./SuggestedWordsGenerator";
 import { VotingClock } from "./VotingClock";
 import { ServerListener } from "./ServerListener";
 import { VotingClockListener } from "./VotingClockListener";
+import { TextStorage } from "./TextStorage";
 
 export class Controller implements ServerListener, VotingClockListener {
     private activeUsers: number;
@@ -29,6 +30,7 @@ export class Controller implements ServerListener, VotingClockListener {
 
     constructor(
         private readonly suggestedWordsGenerator: SuggestedWordsGenerator,
+        private readonly textStorage: TextStorage,
         private readonly textTracker: TextTracker,
         private readonly votesTracker: VotesTracker,
         private readonly votingClock: VotingClock,
@@ -36,7 +38,8 @@ export class Controller implements ServerListener, VotingClockListener {
     ) {}
 
     async initialize() {
-        await this.textTracker.initializeFromStorage();
+        await this.textStorage.initialize();
+        await this.textTracker.initialize(this.textStorage);
 
         this.server.initialize(this);
         this.activeUsers = 0;
@@ -69,7 +72,7 @@ export class Controller implements ServerListener, VotingClockListener {
             newWordChoices: this.newWordChoices,
             voteNumber: this.voteNumber,
             percentVotingTimePassed: this.percentVotingTimePassed,
-            activeUsers: this.activeUsers
+            activeUsers: this.activeUsers,
         };
 
         this.server.broadcastMessage(message);
@@ -87,7 +90,7 @@ export class Controller implements ServerListener, VotingClockListener {
             newWordChoices: this.newWordChoices,
             voteNumber: this.voteNumber,
             percentVotingTimePassed: this.percentVotingTimePassed,
-            activeUsers: this.activeUsers
+            activeUsers: this.activeUsers,
         };
 
         this.server.sendMessageToClient(client, resetMessage);
@@ -109,7 +112,7 @@ export class Controller implements ServerListener, VotingClockListener {
         const tickMessage: OutgoingTickMessage = {
             type: "tick",
             percentVotingTimePassed: this.percentVotingTimePassed,
-            activeUsers: this.activeUsers
+            activeUsers: this.activeUsers,
         };
 
         this.server.broadcastMessage(tickMessage);
@@ -132,7 +135,7 @@ export class Controller implements ServerListener, VotingClockListener {
             selectedLastRoundVotes: this.lastVoteResult.selectedWordVotes,
             lastRoundTotalVotes: this.lastVoteResult.totalVotes,
             percentVotingTimePassed: this.percentVotingTimePassed,
-            activeUsers: this.activeUsers
+            activeUsers: this.activeUsers,
         };
 
         this.server.broadcastMessage(lastVoteMessage);

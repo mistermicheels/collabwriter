@@ -14,8 +14,8 @@ describe("TextTracker", () => {
     async function getTextTrackerForStoredText(storageText: string) {
         when(mockTextStorageDefinition.retrieveText()).thenResolve(storageText);
 
-        const textTracker = new TextTracker(mockTextStorageInstance);
-        await textTracker.initializeFromStorage();
+        const textTracker = new TextTracker();
+        await textTracker.initialize(mockTextStorageInstance);
 
         return textTracker;
     }
@@ -48,7 +48,7 @@ describe("TextTracker", () => {
         expect(textTracker.getLastActualWord()).toBe("event");
         expect(textTracker.getLastWord()).toBe("event");
 
-        verify(mockTextStorageDefinition.storeText(fullText)).once();
+        verify(mockTextStorageDefinition.storeTextAndSwallowErrors(fullText)).once();
     });
 
     test("it should allow adding a period", async () => {
@@ -62,7 +62,7 @@ describe("TextTracker", () => {
         expect(textTracker.getLastActualWord()).toBe("that");
         expect(textTracker.getLastWord()).toBe(".");
 
-        verify(mockTextStorageDefinition.storeText(fullText)).once();
+        verify(mockTextStorageDefinition.storeTextAndSwallowErrors(fullText)).once();
     });
 
     test("it should truncate the text if it gets too long", async () => {
@@ -76,6 +76,6 @@ describe("TextTracker", () => {
         expect(fullText.split(" ").length).toBe(TextTracker.MAX_WORDS);
         expect(fullText.includes("newWord")).toBe(true);
 
-        verify(mockTextStorageDefinition.storeText(fullText)).once();
+        verify(mockTextStorageDefinition.storeTextAndSwallowErrors(fullText)).once();
     });
 });
