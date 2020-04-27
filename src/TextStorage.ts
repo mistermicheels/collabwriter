@@ -1,6 +1,6 @@
 import redis from "redis";
 
-import { Pool, PoolClient } from "pg";
+import { Pool, PoolClient, PoolConfig } from "pg";
 
 export class TextStorage {
     private static readonly REDIS_KEY = "collabwritertext";
@@ -15,10 +15,17 @@ export class TextStorage {
         this.redisClient.on("connect", () => console.log("Connected to Redis"));
         this.redisClient.on("error", (error) => console.error("Redis error " + error));
 
-        this.postgresPool = new Pool({
+        const postgresOptions: PoolConfig = {
             connectionString: postgresUrl,
             ssl: enablePostgresSsl,
-        });
+        };
+
+        if (enablePostgresSsl) {
+            // allow this to work even with self-signed certificates (not huge security issue in our case)
+            postgresOptions.ssl = { rejectUnauthorized: false };
+        }
+
+        this.postgresPool = new Pool(postgresOptions);
 
         this.postgresPool.on("connect", () => console.log("Connected to Postgres"));
         this.postgresPool.on("error", (error) => console.error("Postgres error " + error));
