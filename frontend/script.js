@@ -250,7 +250,7 @@ class ChoicesComponent {
     }
 
     getTotalHeight() {
-        return this._element.clientHeight + 20;
+        return this._element.clientHeight;
     }
 }
 
@@ -266,7 +266,10 @@ class ChoiceButtonComponent {
 
     constructor(element) {
         this._element = element;
+        this._element.textContent = "placeholder"; // e need this placeholder text for proper height calculation on init
         this.markNormal();
+        this.disable();
+        this._element.visibility = "hidden";
     }
 
     markNormal() {
@@ -298,6 +301,7 @@ class ChoiceButtonComponent {
 
         this.markNormal();
         this._element.disabled = false;
+        this._element.visibility = "visible";
     }
 
     _setDynamicClass(dynamicClass) {
