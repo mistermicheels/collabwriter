@@ -266,7 +266,7 @@ class ChoiceButtonComponent {
 
     constructor(element) {
         this._element = element;
-        this._element.textContent = "placeholder"; // e need this placeholder text for proper height calculation on init
+        this._element.textContent = "placeholder"; // we need this placeholder text for proper height calculation on init
         this.markNormal();
         this.disable();
         this._element.visibility = "hidden";
