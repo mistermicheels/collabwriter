@@ -1,111 +1,109 @@
 <html>
+    <head>
+        <title>CollabWriter</title>
 
-<head>
-    <title>CollabWriter</title>
+        <!-- Bootstrap required meta tags -->
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
-    <!-- Bootstrap required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <script
+            src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            crossorigin="anonymous"
+        ></script>
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+            integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+            crossorigin="anonymous"
+        />
+        <script
+            src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+            crossorigin="anonymous"
+        ></script>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-        crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
-        crossorigin="anonymous">
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-        crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="style.css" />
+        <script src="script.js" async></script>
+    </head>
 
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js" async></script>
-</head>
-
-<body>
-    <div class="container">
-        <div id="header">
-            <h1 class="display-4">CollabWriter</h1>
-            <p class="float-left">Currently active users: <span id="activeUsers"></span></p>
-            <button type="button" class="btn btn-link float-right" style="padding: 0px; border: 0px;" data-toggle="modal"
-                data-target="#infoModal">What is this?</button>
-            <div class="clearfix"></div>
-        </div>
-        <div class="modal fade" id="infoModal" tabindex="-1" role="dialog">
+    <body>
+        <div class="container">
+            <div id="header">
+                <h1 class="display-4">CollabWriter</h1>
+                <p class="float-left">Currently active users: <span id="activeUsers"></span></p>
+                <button
+                    type="button"
+                    class="btn btn-link float-right"
+                    style="padding: 0px; border: 0px;"
+                    data-toggle="modal"
+                    data-target="#infoModal"
+                >
+                    What is this?
+                </button>
+                <div class="clearfix"></div>
+            </div>
+            <div class="modal fade" id="infoModal" tabindex="-1" role="dialog">
                 <div class="modal-dialog modal-lg" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title">What is this?</h5>
-                      <button type="button" class="close" data-dismiss="modal">
-                        <span>&times;</span>
-                      </button>
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">What is this?</h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span>&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <h6><strong>This application</strong></h6>
+                            <p>
+                                This is CollabWriter, a massively multiplayer online democratic
+                                suggestion-based writing application. This application allows people
+                                from all over the world to collaborate on writing a story. Words are
+                                added, one by one, by voting on which word to use from a set of
+                                suggestions. Some of the suggestions are based on the last chosen
+                                word, some are random. After each round, the suggestion that
+                                received the most votes is added to the current text. If no votes
+                                were cast during a round, nothing is added to the text and the
+                                application presents a new set of suggestions. As long as people are
+                                voting, the story gets one word longer with each voting round (not
+                                entirely true, because the period to end a sentence also needs a
+                                voting round). Even without other people interfering with your
+                                sentence-building skills, it may be a challenge in itself to build
+                                some sentences that look like a sane person wrote them. Some parts
+                                of the text will probably look like they were written by a drunk
+                                toddler and five layers of Google Translate. In any case, have fun
+                                and feel free to contribute to the story.
+                            </p>
+                            <h6><strong>The text that was written so far</strong></h6>
+                            <p id="fullTextInModal"></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                Close
+                            </button>
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        <h6><strong>This application</strong></h6>
-                        <p>This is CollabWriter, a massively multiplayer online democratic suggestion-based writing application. This application allows people from all over the world to collaborate on writing a story. Words are added, one by one, by voting on which word to use from a set of suggestions. Some of the suggestions are based on the last chosen word, some are random. After each round, the suggestion that received the most votes is added to the current text. If no votes were cast during a round, nothing is added to the text and the application presents a new set of suggestions. As long as people are voting, the story gets one word longer with each voting round (not entirely true, because the period to end a sentence also needs a voting round). Even without other people interfering with your sentence-building skills, it may be a challenge in itself to build some sentences that look like a sane person wrote them. Some parts of the text will probably look like they were written by a drunk toddler and five layers of Google Translate. In any case, have fun and feel free to contribute to the story.</p>
-                        <h6><strong>The text that was written so far</strong></h6>
-                        <p id="fullTextInModal"></p>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                  </div>
                 </div>
-              </div>
-        <div id="textArea" class="row">
-            <div class="col main-text">
-                <p>
-                    <span id="currentText" style="white-space: pre-line;"></span>
-                    <span class="text-primary">
-                        <strong>_____</strong></span></p>
             </div>
+            <div id="textArea" class="row">
+                <div class="col main-text">
+                    <p>
+                        <span id="currentText" style="white-space: pre-line;"></span>
+                        <span class="text-primary"> <strong>_____</strong></span>
+                    </p>
+                </div>
+            </div>
+            <p id="lastChoiceInfo" class="text-secondary"></p>
+            <div id="progress">
+                <div class="progress" style="margin-bottom: 20px;">
+                    <div id="progressBar" class="progress-bar" role="progressbar"></div>
+                </div>
+            </div>
+            <div id="suggestions" class="row"></div>
         </div>
-        <div>
-            <p id="lastChoiceInfo" class="text-secondary">Result of previous round</p>
-        </div>
-        <div id="progress">
-            <div class="progress" style="margin-bottom: 20px;">
-                <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
-            </div>
-        </div>
-        <div id="suggestions" class="row">
-            <div class="col-6 col-md-4 col-lg-3">
-                <button id="choice1" onclick="choiceButtonClicked(1)" onfocus="this.blur()" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden">placeholder</button>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3">
-                <button id="choice2" onclick="choiceButtonClicked(2)" onfocus="this.blur()" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden">placeholder</button>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3">
-                <button id="choice3" onclick="choiceButtonClicked(3)" onfocus="this.blur()" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden">placeholder</button>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3">
-                <button id="choice4" onclick="choiceButtonClicked(4)" onfocus="this.blur()" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden">placeholder</button>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3">
-                <button id="choice5" onclick="choiceButtonClicked(5)" onfocus="this.blur()" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden">placeholder</button>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3">
-                <button id="choice6" onclick="choiceButtonClicked(6)" onfocus="this.blur()" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden">placeholder</button>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3">
-                <button id="choice7" onclick="choiceButtonClicked(7)" onfocus="this.blur()" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden">placeholder</button>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3">
-                <button id="choice8" onclick="choiceButtonClicked(8)" onfocus="this.blur()" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden">placeholder</button>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3">
-                <button id="choice9" onclick="choiceButtonClicked(9)" onfocus="this.blur()" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden">placeholder</button>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3">
-                <button id="choice10" onclick="choiceButtonClicked(10)" onfocus="this.blur()" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden">placeholder</button>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3">
-                <button id="choice11" onclick="choiceButtonClicked(11)" onfocus="this.blur()" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden">placeholder</button>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3">
-                <button id="choice12" onclick="choiceButtonClicked(12)" onfocus="this.blur()" type="button" class="btn btn-outline-primary btn-block" style="overflow: hidden">placeholder</button>
-            </div>
-        </div>
-    </div>
-
-</body>
-
+    </body>
 </html>

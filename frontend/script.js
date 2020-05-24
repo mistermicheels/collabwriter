@@ -4,18 +4,31 @@ const currentTextElement = document.getElementById("currentText");
 const activeUsersElement = document.getElementById("activeUsers");
 const lastChoiceInfoElement = document.getElementById("lastChoiceInfo");
 const progressBarElement = document.getElementById("progressBar");
+const suggestionsElement = document.getElementById("suggestions");
 
 const isTouch = !!("ontouchstart" in window) || window.navigator.msMaxTouchPoints > 0;
 
 const choiceButtonElements = [];
 
 for (let i = 1; i <= 12; i++) {
-    const buttonElement = document.getElementById("choice" + i);
+    const buttonDiv = document.createElement("div");
+    buttonDiv.classList.add("col-6", "col-md-4", "col-lg-3");
+
+    const buttonElement = document.createElement("button");
+    buttonElement.id = "choice" + i;
+    buttonElement.type = "button";
+    buttonElement.classList.add("btn", "btn-outline-primary", "btn-block");
+    buttonElement.style.overflow = "hidden";
     buttonElement.style.visibility = "hidden";
+    buttonElement.onclick = () => choiceButtonClicked(i);
+    buttonElement.onfocus = () => buttonElement.blur();
 
     if (isTouch) {
         buttonElement.classList.add("no-hover");
     }
+
+    buttonDiv.appendChild(buttonElement);
+    suggestionsElement.appendChild(buttonDiv);
 
     choiceButtonElements.push(buttonElement);
 }
@@ -31,7 +44,7 @@ let ownChoiceLastRound = undefined;
 // socket setup
 const socket = new WebSocket("ws://" + location.host + "/socket");
 
-socket.onmessage = function(event) {
+socket.onmessage = function (event) {
     const message = JSON.parse(event.data);
 
     if (message.type === "reset") {
@@ -143,7 +156,7 @@ function updateLastChoiceInfo(message) {
 }
 
 function visualizeOwnChoiceVsSelected(ownChoiceLastRound, selectedLastRound) {
-    choiceButtonElements.forEach(function(buttonElement, index) {
+    choiceButtonElements.forEach(function (buttonElement, index) {
         if (wordChoices[index] === selectedLastRound) {
             buttonElement.classList.remove("btn-primary");
             buttonElement.classList.remove("btn-outline-primary");
@@ -186,7 +199,7 @@ function updateChoiceButtons() {
 }
 
 function setChoiceButtonsEnabled(enabled) {
-    choiceButtonElements.forEach(function(element) {
+    choiceButtonElements.forEach(function (element) {
         element.disabled = !enabled;
     });
 }
@@ -270,7 +283,7 @@ function choiceButtonClicked(choiceNumber) {
     const voteMessage = {
         type: "vote",
         voteNumber: voteNumber,
-        word: word
+        word: word,
     };
 
     socket.send(JSON.stringify(voteMessage));
