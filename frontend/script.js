@@ -269,7 +269,7 @@ class ChoiceButtonComponent {
         this._element.textContent = "placeholder"; // we need this placeholder text for proper height calculation on init
         this.markNormal();
         this.disable();
-        this._element.visibility = "hidden";
+        this._element.style.visibility = "hidden";
     }
 
     markNormal() {
@@ -301,7 +301,7 @@ class ChoiceButtonComponent {
 
         this.markNormal();
         this._element.disabled = false;
-        this._element.visibility = "visible";
+        this._element.style.visibility = "visible";
     }
 
     _setDynamicClass(dynamicClass) {
