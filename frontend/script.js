@@ -21,7 +21,6 @@ for (let i = 1; i <= 12; i++) {
     buttonElement.style.overflow = "hidden";
     buttonElement.style.visibility = "hidden";
     buttonElement.onclick = () => choiceButtonClicked(i);
-    buttonElement.onfocus = () => buttonElement.blur();
 
     if (isTouch) {
         buttonElement.classList.add("no-hover");
