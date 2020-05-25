@@ -1,15 +1,12 @@
 // classes representing page, components on page and state
 
 class Page {
-    _header = new HeaderComponent();
-    _mainText = new MainTextComponent();
-    _lastVoteInfo = new LastVoteInfoComponent();
-    _progress = new ProgressComponent();
-    _modalText = new ModalTextComponent();
-
-    _choices;
-
     constructor(choiceClickCallback) {
+        this._header = new HeaderComponent();
+        this._mainText = new MainTextComponent();
+        this._lastVoteInfo = new LastVoteInfoComponent();
+        this._progress = new ProgressComponent();
+        this._modalText = new ModalTextComponent();
         this._choices = new ChoicesComponent(choiceClickCallback);
     }
 
@@ -72,8 +69,10 @@ class Page {
 }
 
 class HeaderComponent {
-    _element = document.getElementById("header");
-    _activeUsers = new ActiveUsersComponent();
+    constructor() {
+        this._element = document.getElementById("header");
+        this._activeUsers = new ActiveUsersComponent();
+    }
 
     setNumberActiveUsers(numberActiveUsers) {
         this._activeUsers.setNumberActiveUsers(numberActiveUsers);
@@ -85,7 +84,9 @@ class HeaderComponent {
 }
 
 class ActiveUsersComponent {
-    _element = document.getElementById("activeUsers");
+    constructor() {
+        this._element = document.getElementById("activeUsers");
+    }
 
     setNumberActiveUsers(numberActiveUsers) {
         this._element.textContent = numberActiveUsers;
@@ -93,10 +94,11 @@ class ActiveUsersComponent {
 }
 
 class MainTextComponent {
-    _areaElement = document.getElementById("textArea");
-    _textElement = document.getElementById("currentText");
-
-    _textWithLineBreaks;
+    constructor() {
+        this._areaElement = document.getElementById("textArea");
+        this._textElement = document.getElementById("currentText");
+        this._textWithLineBreaks = "";
+    }
 
     initializeFromWords(words, availableHeight) {
         this._textElement.textContent = "";
@@ -163,7 +165,9 @@ class MainTextComponent {
 }
 
 class LastVoteInfoComponent {
-    _element = document.getElementById("lastVoteInfo");
+    constructor() {
+        this._element = document.getElementById("lastVoteInfo");
+    }
 
     setInfo(voteResult) {
         if (voteResult) {
@@ -185,8 +189,10 @@ class LastVoteInfoComponent {
 }
 
 class ProgressComponent {
-    _element = document.getElementById("progress");
-    _barElement = document.getElementById("progressBar");
+    constructor() {
+        this._element = document.getElementById("progress");
+        this._barElement = document.getElementById("progressBar");
+    }
 
     setProgressPercentage(percentage) {
         this._barElement.style.width = percentage + "%";
@@ -198,10 +204,10 @@ class ProgressComponent {
 }
 
 class ChoicesComponent {
-    _element = document.getElementById("choices");
-    _buttons = [];
-
     constructor(clickCallback) {
+        this._element = document.getElementById("choices");
+        this._buttons = [];
+
         const isTouch = !!("ontouchstart" in window) || window.navigator.msMaxTouchPoints > 0;
 
         for (let i = 0; i < 12; i++) {
@@ -255,16 +261,14 @@ class ChoicesComponent {
 }
 
 class ChoiceButtonComponent {
-    _element;
-
-    _dynamicClasses = {
-        selected: "btn-primary",
-        won: "btn-success",
-        lost: "btn-danger",
-        normal: "btn-outline-primary",
-    };
-
     constructor(element) {
+        this._dynamicClasses = {
+            selected: "btn-primary",
+            won: "btn-success",
+            lost: "btn-danger",
+            normal: "btn-outline-primary",
+        };
+
         this._element = element;
         this._element.textContent = "placeholder"; // we need this placeholder text for proper height calculation on init
         this.markNormal();
@@ -313,7 +317,9 @@ class ChoiceButtonComponent {
 }
 
 class ModalTextComponent {
-    _element = document.getElementById("fullTextInModal");
+    constructor() {
+        this._element = document.getElementById("fullTextInModal");
+    }
 
     setFromWords(words) {
         this._element.textContent = words.join(" ");
@@ -321,10 +327,12 @@ class ModalTextComponent {
 }
 
 class State {
-    _currentTextWords = [];
-    _voteNumber = -1;
-    _wordChoices = [];
-    _ownChoiceLastRound;
+    constructor() {
+        this._currentTextWords = [];
+        this._voteNumber = -1;
+        this._wordChoices = [];
+        this._ownChoiceLastRound;
+    }
 
     setCurrentTextWords(currentTextWords) {
         this._currentTextWords = [...currentTextWords];
