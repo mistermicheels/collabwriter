@@ -1,3 +1,8 @@
+Project status:
+
+-   🛑 Not actively maintained
+-   🔒 Not looking for code contributions from other developers
+
 # CollabWriter
 
 This is CollabWriter, a massively multiplayer online democratic suggestion-based writing application.
