@@ -385,7 +385,9 @@ class State {
 const state = new State();
 const page = new Page(choiceButtonClickCallback);
 
-const socket = new WebSocket("ws://" + location.host + "/socket");
+const socketProtocol = location.origin.startsWith("https") ? "wss" : "ws";
+const socketUrl = socketProtocol + "://" + location.host + "/socket";
+const socket = new WebSocket(socketUrl);
 
 socket.onmessage = function (event) {
     const message = JSON.parse(event.data);
