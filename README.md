@@ -1,6 +1,8 @@
 Project status:
 
--   🛑 Not actively maintained
+-   🔧 In maintenance mode
+    -   New features will not be added.
+    -   A best-effort attempt will be made to keep the current functionality working.
 -   🔒 Not looking for code contributions from other developers
 
 # CollabWriter
