@@ -14,11 +14,18 @@ async function init() {
     const enablePostgresSsl = determinePostgresSsl();
 
     const suggestedWordsGenerator = new SuggestedWordsGenerator();
-    const textStorage = new TextStorage(postgresUrl, enablePostgresSsl);
     const textTracker = new TextTracker();
     const votesTracker = new VotesTracker();
     const votingClock = new VotingClock();
     const server = new Server(port);
+
+    let textStorage: TextStorage = undefined;
+
+    if (postgresUrl) {
+        textStorage = new TextStorage(postgresUrl, enablePostgresSsl);
+    } else {
+        console.log(`Running without persistent storage`);
+    }
 
     const controller = new Controller(
         suggestedWordsGenerator,
@@ -44,7 +51,7 @@ function determinePostgresUrl() {
     if (process.env.DATABASE_URL) {
         return process.env.DATABASE_URL;
     } else {
-        return "postgresql://postgres:admin@localhost:5432/collabwriter";
+        return undefined;
     }
 }
 

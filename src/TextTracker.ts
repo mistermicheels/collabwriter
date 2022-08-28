@@ -12,11 +12,16 @@ export class TextTracker {
     constructor() {}
 
     async initialize(textStorage: TextStorage) {
-        this.textStorage = textStorage;
+        this.fullText = "This is the start of the story.";
 
-        const retrievedText = await this.textStorage.retrieveText();
+        if (textStorage) {
+            this.textStorage = textStorage;
+            const retrievedText = await this.textStorage.retrieveText();
 
-        this.fullText = retrievedText || "This is the start of the story.";
+            if (retrievedText) {
+                this.fullText = retrievedText;
+            }
+        }
 
         const sentenceParts = this.fullText.split(" ");
         const lastSentencePart = sentenceParts[sentenceParts.length - 1];
@@ -56,8 +61,10 @@ export class TextTracker {
 
         this.truncateTextIfTooLong();
 
-        // don't await, we don't need to be sure it succeeds
-        void this.textStorage.storeTextAndSwallowErrors(this.fullText);
+        if (this.textStorage) {
+            // don't await, we don't need to be sure it succeeds
+            void this.textStorage.storeTextAndSwallowErrors(this.fullText);
+        }
     }
 
     private truncateTextIfTooLong() {

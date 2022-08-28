@@ -38,7 +38,10 @@ export class Controller implements ServerListener, VotingClockListener {
     ) {}
 
     async initialize() {
-        await this.textStorage.initialize();
+        if (this.textStorage) {
+            await this.textStorage.initialize();
+        }
+
         await this.textTracker.initialize(this.textStorage);
 
         this.server.initialize(this);

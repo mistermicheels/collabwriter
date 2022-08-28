@@ -4,7 +4,8 @@
     "description": "",
     "main": "dist/index.js",
     "scripts": {
-        "start": "cross-env DATABASE_SSL=false ts-node-dev src/index.ts",
+        "start-default-storage": "cross-env DATABASE_URL=postgresql://postgres:admin@localhost:5432/collabwriter DATABASE_SSL=false ts-node-dev src/index.ts",
+        "start-no-storage": "ts-node-dev src/index.ts",
         "test": "jest --silent",
         "build-ts": "tsc",
         "postinstall": "npm run build-ts"
