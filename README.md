@@ -9,7 +9,7 @@ Project status:
 
 This is CollabWriter, a massively multiplayer online democratic suggestion-based writing application.
 
-[Click here to open the application](https://collabwriter.herokuapp.com/)
+[Click here to open the application](https://collabwriter.fly.dev/)
 
 ## How it works
 
