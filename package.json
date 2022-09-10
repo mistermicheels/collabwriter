@@ -16,7 +16,7 @@
         "express": "^4.16.4",
         "express-ws": "^4.0.0",
         "got": "^9.3.0",
-        "pg": "^8.0.3",
+        "pg": "^8.8.0",
         "random-words": "^1.1.0"
     },
     "devDependencies": {
