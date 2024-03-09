@@ -1,15 +1,11 @@
 Project status:
 
--   🔧 In maintenance mode
-    -   New features will not be added.
-    -   A best-effort attempt will be made to keep the current functionality working.
+-   🛑 Not actively maintained
 -   🔒 Not looking for code contributions from other developers
 
 # CollabWriter
 
 This is CollabWriter, a massively multiplayer online democratic suggestion-based writing application.
-
-[Click here to open the application](https://collabwriter.fly.dev/)
 
 ## How it works
 
