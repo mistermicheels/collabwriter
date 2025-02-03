@@ -7,6 +7,8 @@ Project status:
 
 This is CollabWriter, a massively multiplayer online democratic suggestion-based writing application.
 
+![Screenshot](screenshot.png)
+
 ## How it works
 
 -   The frontend is built using HTML, CSS, vanilla JS and Bootstrap.
