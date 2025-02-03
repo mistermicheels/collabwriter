@@ -114,7 +114,7 @@ export class SuggestedWordsGenerator {
 
     async getDataMuseWordsFollowing(word: string) {
         try {
-            const result = await got("https://api.datamuse.com/words?lc=" + word, {
+            const result = await got("https://api.datamuse.com/words?rel_bga=" + word, {
                 method: "GET",
                 json: true,
                 timeout: SuggestedWordsGenerator.DATAMUSE_TIMEOUT,
