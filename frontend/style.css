@@ -31,3 +31,7 @@ html {
     color: #007bff !important;
     background-color: inherit !important;
 }
+
+.force-scrollbar {
+    overflow-y: scroll;
+}

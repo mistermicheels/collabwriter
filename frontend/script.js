@@ -100,7 +100,11 @@ class MainTextComponent {
         this._textWithLineBreaks = "";
     }
 
-    initializeFromWords(words, availableHeight) {
+    initializeFromWords(words, availableHeight, { scrollbarWorkaround = false } = {}) {
+        if (scrollbarWorkaround) {
+            document.body.classList.add("force-scrollbar");
+        }
+
         this._textElement.textContent = "";
         this._textWithLineBreaks = "";
         const minimumInitialWords = 50;
@@ -108,14 +112,21 @@ class MainTextComponent {
         // add words in reverse order so we always show the last part of the text
         for (let i = words.length - 1; i >= 0; i--) {
             const previousHeight = this._areaElement.clientHeight;
+            const previousWidth = this._areaElement.clientWidth;
 
             const currentWord = words[i];
             this._textElement.textContent = currentWord + " " + this._textWithLineBreaks;
             const newHeight = this._areaElement.clientHeight;
+            const newWidth = this._areaElement.clientWidth;
 
             const shownWords = words.length - i;
 
-            if (newHeight === previousHeight) {
+            if (newWidth < previousWidth) {
+                // a scrollbar has appeared, potentially messing up our earlier line breaks
+                // start over and force scrollbar from the start
+                this.initializeFromWords(words, availableHeight, { scrollbarWorkaround: true });
+                return;
+            } else if (newHeight === previousHeight) {
                 // adding the word didn't force a new line break
                 this._textWithLineBreaks = this._textElement.textContent;
             } else if (newHeight <= availableHeight || shownWords <= minimumInitialWords) {
@@ -128,6 +139,10 @@ class MainTextComponent {
                 this._textElement.textContent = this._textWithLineBreaks;
                 break;
             }
+        }
+
+        if (scrollbarWorkaround) {
+            document.body.classList.remove("force-scrollbar");
         }
     }
 
